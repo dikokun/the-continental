@@ -94,8 +94,8 @@ def cover(img, w, h, focal=(0.5, 0.45)):
     x0 = min(max(int(fx * nw - w / 2), 0), nw - w); y0 = min(max(int(fy * nh - h / 2), 0), nh - h)
     return r.crop((x0, y0, x0 + w, y0 + h))
 def halftone(img, w, h):
-    g = ImageOps.grayscale(cover(img, w, h)).point(lambda v: 0 if v < 70 else (110 if v < 140 else (190 if v < 200 else 255)))
-    pal = {0: BLACK, 110: RED, 190: YELLOW, 255: (250, 244, 224)}
+    g = ImageOps.grayscale(cover(img, w, h)).point(lambda v: 0 if v < 55 else (80 if v < 115 else (140 if v < 175 else (200 if v < 215 else 255))))
+    pal = {0: BLACK, 80: (120, 24, 18), 140: RED, 200: YELLOW, 255: (250, 244, 224)}
     out = Image.new("RGB", (w, h))
     px_g = g.load(); px_o = out.load()
     for yy in range(h):
@@ -103,7 +103,7 @@ def halftone(img, w, h):
     dd = ImageDraw.Draw(out)
     for yy in range(0, h, 5):
         for xx in range(0, w, 5):
-            if px_g[xx, yy] == 110: dd.ellipse([xx, yy, xx + 2, yy + 2], fill=BLACK)
+            if px_g[xx, yy] == 140: dd.ellipse([xx, yy, xx + 2, yy + 2], fill=BLACK)
     return out
 LAND = [
 "                                                  ",
@@ -212,11 +212,11 @@ def mid_plate_A(img, d, y, rowh, plate_h):
         art = Image.open(os.path.join(BASE, MID_ART[m["n"]])).convert("RGB")
         img.paste(cover(art, colw, plate_h), (cx, cy + 16))
         d.rectangle([cx, cy + 16, cx + colw, cy + 16 + plate_h], outline=INK, width=1)
-        ty = cy + 20 + plate_h
+        ty = cy + 19 + plate_h
         head_lines = wrap(d, m["head"], arch(12, 800), colw - 2)
         if len(head_lines) > 2: raise SystemExit(f"mid {m['n']}: headline {len(head_lines)} lines (A)")
         for ln in head_lines:
-            d.text((cx, ty), ln, font=arch(12, 800), fill=INK); ty += 14
+            d.text((cx, ty), ln, font=arch(12, 800), fill=INK); ty += 13
         fy = cy + rowh - 14
         d.text((cx, fy), m["fig"], font=arch(12, 900), fill=CRIMSON)
         figw = tw(d, m["fig"], arch(12, 900))
@@ -224,6 +224,43 @@ def mid_plate_A(img, d, y, rowh, plate_h):
         if len(dl) > 1: raise SystemExit(f"mid {m['n']}: deck wraps (A)")
         d.text((cx + 10 + figw, fy + 1), dl[0], font=inter(9, 400), fill=(70, 74, 82))
         d.line([cx, cy + rowh - 3, cx + colw, cy + rowh - 3], fill=LIGHT)
+
+
+def mid_large(img, d, y, plate_fn, fig_col_fn, bar_fn):
+    colw = (CW - 16) // 3; rowh = 108; plate_h = 48
+    for i, m in enumerate(MIDS):
+        cx = MARGIN + (i % 3) * (colw + 8); cy = y + (i // 3) * rowh
+        d.rectangle([cx, cy + 1, cx + 4, cy + 100], fill=bar_fn(m))
+        d.text((cx + 9, cy), f"{m['n']:02d}", font=arch(15, 900), fill=BLUE)
+        d.text((cx + 44, cy + 3), f"{m['region']} · {m['field']} · {m['part']}", font=arch(10, 800), fill=GREY)
+        cf = arch(9, 800); chw = tw(d, m["chip"], cf) + 11
+        d.rectangle([cx + colw - chw, cy, cx + colw, cy + 14], fill=CHIP_COL[m["chip"]])
+        d.text((cx + colw - chw + 6, cy + 2), m["chip"], font=cf, fill=WHITE)
+        plate, bcol, bw_ = plate_fn(m, colw, plate_h)
+        img.paste(plate, (cx, cy + 16))
+        d.rectangle([cx, cy + 16, cx + colw, cy + 16 + plate_h], outline=bcol, width=bw_)
+        head_lines = wrap(d, m["head"], arch(12, 800), colw - 4)
+        if len(head_lines) > 2: raise SystemExit(f"mid {m['n']}: headline {len(head_lines)} lines (large)")
+        ty = cy + 67
+        for ln in head_lines:
+            d.text((cx + 2, ty), ln, font=arch(12, 800), fill=INK); ty += 13
+        fy = cy + 94
+        d.text((cx + 2, fy), m["fig"], font=arch(12, 900), fill=fig_col_fn(m))
+        figw = tw(d, m["fig"], arch(12, 900))
+        dl = wrap(d, m["deck"], inter(10, 400), colw - 24 - figw)
+        if len(dl) > 1: raise SystemExit(f"mid {m['n']}: deck wraps (large)")
+        d.text((cx + 12 + figw, fy + 1), dl[0], font=inter(10, 400), fill=(70, 74, 82))
+        d.line([cx, cy + rowh - 2, cx + colw, cy + rowh - 2], fill=LIGHT)
+
+def data_strip(m, w, h):
+    s = Image.new("RGB", (w, h), NAVY); sd = ImageDraw.Draw(s)
+    hs = [0.3 + ((m["n"] * (k + 3)) % 10) / 15.0 for k in range(9)]
+    for k, hh in enumerate(hs):
+        bx = 10 + k * 17; bh = int((h - 14) * hh)
+        sd.rectangle([bx, h - 7 - bh, bx + 10, h - 7], fill=AMBER if k == len(hs) - 1 else (120, 140, 180))
+    sd.text((w - tw(sd, m["fig"], arch(15, 900)) - 10, 8), m["fig"], font=arch(15, 900), fill=AMBER)
+    sd.text((w - tw(sd, "THE FIGURE, DRAWN", arch(8, 800)) - 10, 30), "THE FIGURE, DRAWN", font=arch(8, 800), fill=(178, 186, 205))
+    return s
 
 def build_A():
     img = Image.new("RGB", (W, W), PAPER); d = ImageDraw.Draw(img)
@@ -249,12 +286,12 @@ def build_A():
             d.text((rx, y + 21 + j * 8), ln, font=arch(7, 700), fill=(178, 186, 205))
         if i: d.line([MARGIN + i * rw, y + 4, MARGIN + i * rw, y + 30], fill=(52, 58, 74), width=1)
     y += 37
-    y = hero_block(img, d, y, 88, serif(15), 17, lambda a, w, h: cover(a, w, h))
+    y = hero_block(img, d, y, 70, serif(15), 17, lambda a, w, h: cover(a, w, h))
     d.text((MARGIN, y), "THE DAY IN FULL", font=serif(16), fill=INK)
     d.line([MARGIN + 150, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
     y += 20
-    mid_plate_A(img, d, y, 96, 34)
-    y += 4 * 96 + 2
+    mid_plate_A(img, d, y, 108, 48)
+    y += 4 * 108 + 2
     bot = y
     draw_map(d, img, MARGIN, bot, 452, 112, AMBER)
     draw_datecheck(d, MARGIN, bot + 122, 452, 88)
@@ -303,7 +340,7 @@ def build_B():
     d.text((MARGIN, y), REGION_COUNTS, font=arch(13, 900), fill=INK)
     d.line([MARGIN, y + 17, W - MARGIN, y + 17], fill=INK, width=3)
     y += 21
-    pw = (CW - 16) // 3; ph = 108
+    pw = (CW - 16) // 3; ph = 92
     for i, hero in enumerate(HEROES):
         x = MARGIN + i * (pw + 8)
         data_hero(d, x, y, pw, ph, hero)
@@ -320,39 +357,13 @@ def build_B():
     d.text((MARGIN, y), "THE DAY IN FULL — EACH STORY WITH ITS FIGURE", font=arch(13, 900), fill=INK)
     d.line([MARGIN + 380, y + 7, W - MARGIN, y + 7], fill=INK, width=2)
     y += 16
-    colw = (CW - 16) // 3; rowh = 92
-    for i, m in enumerate(MIDS):
-        cx = MARGIN + (i % 3) * (colw + 8); cy = y + (i // 3) * rowh
-        d.rectangle([cx, cy, cx + 54, cy + 84], fill=NAVY)
-        hs = [0.35 + ((m["n"] * (k + 3)) % 10) / 16.0 for k in range(4)]
-        for k, hh in enumerate(hs):
-            bx = cx + 7 + k * 11; bh = int(30 * hh)
-            d.rectangle([bx, cy + 44 - bh, bx + 7, cy + 44], fill=AMBER if k == 3 else (120, 140, 180))
-        d.text((cx + 5, cy + 50), "FIG.", font=arch(8, 800), fill=(178, 186, 205))
-        d.text((cx + 5, cy + 62), f"Nº{m['n']}", font=arch(11, 900), fill=WHITE)
-        tx = cx + 62
-        d.text((tx, cy), f"{m['region']} · {m['field']}", font=arch(9, 800), fill=GREY)
-        cf = arch(9, 800); chw = tw(d, m["chip"], cf) + 11
-        d.rectangle([cx + colw - chw, cy, cx + colw, cy + 14], fill=CHIP_COL[m["chip"]])
-        d.text((cx + colw - chw + 6, cy + 2), m["chip"], font=cf, fill=WHITE)
-        head_lines = wrap(d, m["head"], arch(12, 800), colw - 66)
-        if len(head_lines) > 3: raise SystemExit(f"B mid {m['n']} headline {len(head_lines)}")
-        for j, ln in enumerate(head_lines):
-            d.text((tx, cy + 15 + j * 14), ln, font=arch(12, 800), fill=INK)
-        fy = cy + 60
-        d.text((tx, fy), m["fig"], font=arch(12, 900), fill=CRIMSON)
-        figw = tw(d, m["fig"], arch(12, 900))
-        dl = wrap(d, m["deck"], inter(9, 400), colw - 66 - figw - 8)
-        if len(dl) > 2: raise SystemExit(f"B mid {m['n']} deck")
-        for j, ln in enumerate(dl):
-            d.text((tx + 8 + figw, fy + 1 + j * 11), ln, font=inter(9, 400), fill=(70, 74, 82))
-        d.line([cx, cy + rowh - 3, cx + colw, cy + rowh - 3], fill=LIGHT)
-    y += 4 * rowh + 2
+    mid_large(img, d, y, lambda m, w, h: (data_strip(m, w, h), INK, 1), lambda m: CRIMSON, lambda m: NAVY)
+    y += 4 * 108 + 2
     bot = y
     end = draw_also(d, img, MARGIN, bot, 540, "ALSO THURSDAY — 21 MORE, FLAGGED")
     mx = MARGIN + 554; mw = CW - 554
-    draw_map(d, img, mx, bot, mw, 112, AMBER)
-    draw_datecheck(d, mx, bot + 122, mw, 88)
+    draw_map(d, img, mx, bot, mw, 100, AMBER)
+    draw_datecheck(d, mx, bot + 110, mw, 100)
     footer(d, max(bot + 216, end) + 2, "THE LEDGER")
     return img
 
@@ -376,35 +387,14 @@ def build_C():
             d.text((rx, y + 21 + j * 8), ln, font=arch(7, 700), fill=(200, 200, 200))
         if i: d.line([MARGIN + i * rw, y + 4, MARGIN + i * rw, y + 30], fill=(70, 70, 70), width=1)
     y += 37
-    y = hero_block(img, d, y, 84, arch(15, 900), 17, lambda a, w, h: halftone(a, w, h))
+    y = hero_block(img, d, y, 70, arch(15, 900), 17, lambda a, w, h: halftone(a, w, h))
     d.rectangle([MARGIN, y, W - MARGIN, y + 18], fill=BLACK)
     d.text((MARGIN + 8, y + 3), "THE DAY IN FULL", font=arch(12, 900), fill=YELLOW)
     y += 22
-    colw = (CW - 16) // 3; rowh = 94; plate_w, plate_h = 92, 46
-    for i, m in enumerate(MIDS):
-        cx = MARGIN + (i % 3) * (colw + 8); cy = y + (i // 3) * rowh
-        d.rectangle([cx, cy + 1, cx + 4, cy + 88], fill=RED)
-        d.text((cx + 9, cy), f"{m['n']:02d}", font=arch(15, 900), fill=BLUE)
-        d.text((cx + 44, cy + 3), f"{m['region']} · {m['field']} · {m['part']}", font=arch(10, 800), fill=GREY)
-        cf = arch(9, 800); chw = tw(d, m["chip"], cf) + 11
-        d.rectangle([cx + colw - chw, cy, cx + colw, cy + 14], fill=CHIP_COL[m["chip"]])
-        d.text((cx + colw - chw + 6, cy + 2), m["chip"], font=cf, fill=WHITE)
-        art = Image.open(os.path.join(BASE, MID_ART[m["n"]])).convert("RGB")
-        img.paste(halftone(art, plate_w, plate_h), (cx + colw - plate_w, cy + 16))
-        d.rectangle([cx + colw - plate_w, cy + 16, cx + colw, cy + 16 + plate_h], outline=BLACK, width=2)
-        head_lines = wrap(d, m["head"], arch(13, 800), colw - plate_w - 20)
-        if len(head_lines) > 3: raise SystemExit(f"C mid {m['n']} headline")
-        for j, ln in enumerate(head_lines):
-            d.text((cx + 9, cy + 16 + j * 15), ln, font=arch(13, 800), fill=BLACK)
-        fy = cy + 64
-        d.text((cx + 9, fy), m["fig"], font=arch(13, 900), fill=RED)
-        figw = tw(d, m["fig"], arch(13, 900))
-        dl = wrap(d, m["deck"], inter(10, 400), colw - 22 - figw)
-        if len(dl) > 2: raise SystemExit(f"C mid {m['n']} deck")
-        for j, ln in enumerate(dl):
-            d.text((cx + 13 + figw, fy + 2 + j * 12), ln, font=inter(10, 400), fill=(70, 74, 82))
-        d.line([cx, cy + rowh - 3, cx + colw, cy + rowh - 3], fill=(220, 205, 170))
-    y += 4 * rowh + 2
+    mid_large(img, d, y,
+        lambda m, w, h: (halftone(Image.open(os.path.join(BASE, MID_ART[m["n"]])).convert("RGB"), w, h), BLACK, 2),
+        lambda m: RED, lambda m: RED)
+    y += 4 * 108 + 2
     bot = y
     draw_map(d, img, MARGIN, bot, 452, 112, YELLOW)
     draw_datecheck(d, MARGIN, bot + 122, 452, 88)
@@ -439,7 +429,7 @@ def build_D():
     d.text((lx, y + 5), "FLAT PLATES = MARKETS, TALKS, THE DAY'S BUSINESS", font=arch(11, 800), fill=INK)
     y += 25
     # heroes: woodcut (all three carry weight: strike, storm, summit fight)
-    pw = (CW - 16) // 3; art_h = 84
+    pw = (CW - 16) // 3; art_h = 70
     for i, hero in enumerate(HEROES):
         x = MARGIN + i * (pw + 8)
         art = Image.open(os.path.join(BASE, f"art/wood-hero-{hero['scene']}.webp")).convert("RGB")
@@ -465,36 +455,14 @@ def build_D():
             d.text((x, ty + 1), ln, font=inter(11, 400), fill=(70, 74, 82)); ty += 12
         d.rectangle([x, y, x + pw, y + art_h], outline=CRIMSON, width=3)
     y += art_h + 6 + 51 + 26
-    d.text((MARGIN, y), "THE DAY IN FULL — INK FOLLOWS WEIGHT", font=serif(15), fill=INK)
-    d.line([MARGIN + 320, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
+    _ht = "THE DAY IN FULL — INK FOLLOWS WEIGHT"
+    d.text((MARGIN, y), _ht, font=serif(15), fill=INK)
+    d.line([MARGIN + tw(d, _ht, serif(15)) + 12, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
     y += 19
-    colw = (CW - 16) // 3; rowh = 94; plate_w, plate_h = 92, 46
-    for i, m in enumerate(MIDS):
-        cx = MARGIN + (i % 3) * (colw + 8); cy = y + (i // 3) * rowh
-        heavy = m["n"] in HEAVY
-        d.rectangle([cx, cy + 1, cx + 4, cy + 88], fill=CRIMSON if heavy else NAVY)
-        d.text((cx + 9, cy), f"{m['n']:02d}", font=arch(15, 900), fill=BLUE)
-        d.text((cx + 44, cy + 3), f"{m['region']} · {m['field']} · {m['part']}", font=arch(10, 800), fill=GREY)
-        cf = arch(9, 800); chw = tw(d, m["chip"], cf) + 11
-        d.rectangle([cx + colw - chw, cy, cx + colw, cy + 14], fill=CHIP_COL[m["chip"]])
-        d.text((cx + colw - chw + 6, cy + 2), m["chip"], font=cf, fill=WHITE)
-        kind = "wood" if heavy else "flat"
-        art = Image.open(os.path.join(BASE, f"art/{kind}-mid-{m['n']:02d}.webp")).convert("RGB")
-        img.paste(cover(art, plate_w, plate_h), (cx + colw - plate_w, cy + 16))
-        d.rectangle([cx + colw - plate_w, cy + 16, cx + colw, cy + 16 + plate_h], outline=CRIMSON if heavy else NAVY, width=2 if heavy else 1)
-        head_lines = wrap(d, m["head"], arch(13, 800), colw - plate_w - 20)
-        if len(head_lines) > 3: raise SystemExit(f"D mid {m['n']} headline")
-        for j, ln in enumerate(head_lines):
-            d.text((cx + 9, cy + 16 + j * 15), ln, font=arch(13, 800), fill=INK)
-        fy = cy + 64
-        d.text((cx + 9, fy), m["fig"], font=arch(13, 900), fill=CRIMSON if heavy else NAVY)
-        figw = tw(d, m["fig"], arch(13, 900))
-        dl = wrap(d, m["deck"], inter(10, 400), colw - 22 - figw)
-        if len(dl) > 2: raise SystemExit(f"D mid {m['n']} deck")
-        for j, ln in enumerate(dl):
-            d.text((cx + 13 + figw, fy + 2 + j * 12), ln, font=inter(10, 400), fill=(70, 74, 82))
-        d.line([cx, cy + rowh - 3, cx + colw, cy + rowh - 3], fill=LIGHT)
-    y += 4 * rowh + 2
+    mid_large(img, d, y,
+        lambda m, w, h: (cover(Image.open(os.path.join(BASE, f"art/{'wood' if m['n'] in HEAVY else 'flat'}-mid-{m['n']:02d}.webp")).convert("RGB"), w, h), CRIMSON if m["n"] in HEAVY else NAVY, 2 if m["n"] in HEAVY else 1),
+        lambda m: CRIMSON if m["n"] in HEAVY else NAVY, lambda m: CRIMSON if m["n"] in HEAVY else NAVY)
+    y += 4 * 108 + 2
     bot = y
     draw_map(d, img, MARGIN, bot, 452, 112, AMBER)
     draw_datecheck(d, MARGIN, bot + 122, 452, 88)
@@ -502,7 +470,62 @@ def build_D():
     footer(d, max(bot + 216, end) + 2, "THE CROSSWIRE")
     return img
 
-BUILDERS = {"A": build_A, "B": build_B, "C": build_C, "D": build_D}
+
+def build_W():
+    img = Image.new("RGB", (W, W), PAPER); d = ImageDraw.Draw(img)
+    PART_COL = {"NIGHT": NAVY, "MORNING": (176, 116, 20), "AFTERNOON": TEAL, "EVENING": CRIMSON}
+    y = 10
+    d.text((MARGIN, y), "THE DAYWATCH", font=arch(21, 900), fill=CRIMSON)
+    d.text((MARGIN + 218, y + 5), "ONE DAY · ONE CLOCK · EVERY STORY AT ITS HOUR", font=arch(12, 800), fill=GREY)
+    y += 24
+    d.text((MARGIN, y), "THURSDAY 26 NOVEMBER 2026", font=arch(44, 900), fill=INK)
+    slab_x = W - MARGIN - 150
+    d.rectangle([slab_x, y - 24, W - MARGIN, y + 47], fill=INK)
+    d.text((slab_x + 14, y - 18), "DAY 330", font=arch(15, 900), fill=AMBER)
+    d.text((slab_x + 14, y + 2), "OF 2026", font=arch(15, 900), fill=WHITE)
+    d.text((slab_x + 14, y + 22), "36 STORIES", font=arch(15, 900), fill=WHITE)
+    y += 48
+    d.text((MARGIN, y), REGION_COUNTS, font=arch(14, 900), fill=INK)
+    y += 18
+    rib_y = y; seg_w = CW / 4.0
+    parts = [("NIGHT 00-06", NAVY), ("MORNING 06-12", (176, 116, 20)), ("AFTERNOON 12-18", TEAL), ("EVENING 18-24", CRIMSON)]
+    for i, (label, col) in enumerate(parts):
+        x0 = MARGIN + i * seg_w
+        d.rectangle([x0, rib_y, x0 + seg_w - 2, rib_y + 15], fill=col)
+        d.text((x0 + 8, rib_y + 2), label, font=arch(11, 900), fill=WHITE)
+    bar_y = rib_y + 18
+    d.rectangle([MARGIN, bar_y, W - MARGIN, bar_y + 15], fill=(232, 226, 208))
+    plotted = [(h["hour"], h["n"]) for h in HEROES] + [(m["hour"], m["n"]) for m in MIDS]
+    for j, (hr, n) in enumerate(sorted(plotted)):
+        px = MARGIN + hr * CW / 24.0; py = bar_y + (3 if j % 2 == 0 else 10)
+        d.ellipse([px - 7, py - 4, px + 7, py + 10], fill=INK)
+        s = str(n); d.text((px - tw(d, s, arch(8, 900)) / 2, py - 2), s, font=arch(8, 900), fill=AMBER)
+    y = bar_y + 18
+    d.rectangle([MARGIN, y, W - MARGIN, y + 38], fill=INK)
+    rw = CW // 6
+    for i, (fig, cap) in enumerate(RAIL):
+        rx = MARGIN + i * rw + 10
+        d.text((rx, y + 3), fig, font=arch(18, 900), fill=AMBER)
+        for j, ln in enumerate(wrap(d, cap, arch(7, 700), rw - 16)[:2]):
+            d.text((rx, y + 23 + j * 8), ln, font=arch(7, 700), fill=(178, 186, 205))
+        if i: d.line([MARGIN + i * rw, y + 5, MARGIN + i * rw, y + 33], fill=(52, 58, 74), width=1)
+    y += 39
+    y = hero_block(img, d, y, 70, arch(16, 900), 18, lambda a, w, h: cover(a, w, h))
+    d.text((MARGIN, y), "THE DAY IN FULL - BY THE CLOCK", font=arch(13, 900), fill=INK)
+    d.line([MARGIN + 252, y + 7, W - MARGIN, y + 7], fill=INK, width=2)
+    y += 14
+    mid_large(img, d, y,
+        lambda m, w, h: (cover(Image.open(os.path.join(BASE, MID_ART[m["n"]])).convert("RGB"), w, h), INK, 1),
+        lambda m: PART_COL[m["part"]], lambda m: PART_COL[m["part"]])
+    y += 4 * 108 + 2
+    bot = y
+    draw_map(d, img, MARGIN, bot, 452, 112, AMBER)
+    draw_datecheck(d, MARGIN, bot + 122, 452, 88)
+    end = draw_also(d, img, MARGIN + 466, bot, CW - 466, "ALSO THURSDAY - 21 MORE, FLAGGED")
+    footer(d, max(bot + 216, end) + 2, "THE DAYWATCH")
+    return img
+
+BUILDERS = {"A": build_A, "B": build_B, "C": build_C, "D": build_D, "W": build_W}
 def main():
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
