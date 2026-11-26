@@ -1,0 +1,109 @@
+# Slate for THE DAYWATCH — Thursday 26 November 2026.
+# Every fact verified Thu 2026-11-26 in the wire sweeps (Reuters/AP/ONS/
+# KCNA/dpa/FOX Weather/NPR). Day-anchor audit: stories that happened
+# earlier are run only as their Thursday development, with the earlier
+# day named in the deck, or excluded in DATE_CHECK.
+
+HEROES = [
+    dict(n=1, region="EUROPE", field="WAR", chip="CONFIRMED", part="NIGHT", hour=1.0,
+         head="BALLISTIC MISSILES AND 113 DRONES HIT KYIV IN THE NIGHT",
+         deck="A shopping centre burns in Desnianskyi, 7 wounded; Zelensky warns a bigger strike is being prepared.",
+         banner="KYIV HIT OVERNIGHT · 7 WOUNDED", scene="kyiv", fig="113 DRONES"),
+    dict(n=2, region="AMERICAS", field="WEATHER", chip="CONFIRMED", part="AFTERNOON", hour=14.7,
+         head="STORM GROUNDS THE 100TH MACY'S PARADE",
+         deck="81.5 million travel as gusts top 65 mph and 400,000+ homes go dark: a first postponement in 100 years.",
+         banner="PARADE POSTPONED — A FIRST IN 100 YEARS", scene="storm", fig="81.5M"),
+    dict(n=3, region="EUROPE", field="POLITICS", chip="REPORTED", part="MORNING", hour=10.0,
+         head="EU FIGHTS OVER €1.58TN — AND UKRAINE'S €45BN",
+         deck="Brussels wrestles the 2028–34 budget and a loan for Kyiv, racing to lock both before Le Pen.",
+         banner="MERZ: “27, NOT 23 OR 24”", scene="summit", fig="€45BN"),
+]
+
+MIDS = [
+    dict(n=4, region="MIDDLE EAST", field="GAZA", chip="CONFIRMED", part="NIGHT", hour=0.5, fig="9 DEAD",
+         head="ISRAEL KILLS NINE IN GAZA, DEPUTY MINISTER AMONG THEM",
+         deck="Third straight night despite the year-old ceasefire."),
+    dict(n=5, region="ASIA", field="NORTH KOREA", chip="OFFICIAL", part="NIGHT", hour=2.0, fig="TACTICAL NUKES",
+         head="KIM TOURS NUCLEAR PLANTS, ORDERS WIDER TACTICAL DEPLOYMENT",
+         deck="KCNA: status “absolutely inviolable”."),
+    dict(n=6, region="ASIA", field="MINE", chip="CONFIRMED", part="MORNING", hour=5.0, fig="13 + 13",
+         head="13 DEAD CONFIRMED AT BOGOR MINE, 13 STILL TRAPPED",
+         deck="Rain halts the search; six dead identified."),
+    dict(n=7, region="EUROPE", field="MIGRATION", chip="OFFICIAL", part="AFTERNOON", hour=13.0, fig="77,000",
+         head="UK NET MIGRATION FALLS TO 77,000, LOWEST SINCE 1997",
+         deck="ONS: down from 204,000; 92% below the peak."),
+    dict(n=8, region="EUROPE", field="SECURITY", chip="OFFICIAL", part="MORNING", hour=7.0, fig="17 RAIDS",
+         head="GERMANY ARRESTS TWO OVER COLOGNE SYNAGOGUE BOMB PLOT",
+         deck="Two Iraqi suspects held; 250 officers raided."),
+    dict(n=9, region="AFRICA", field="EGYPT", chip="OFFICIAL", part="MORNING", hour=10.5, fig="31 DEAD",
+         head="GIZA TANKER DRIVER ARRESTED, ADMITS DRIVING AT 110 KM/H",
+         deck="The arrest is Thursday's; the fire was Wed."),
+    dict(n=10, region="EUROPE", field="WAR", chip="REPORTED", part="NIGHT", hour=1.5, fig="NEVINNOMYSSK",
+         head="UKRAINIAN DRONES HIT A POWER PLANT INSIDE RUSSIA",
+         deck="Stavropol strike; fire reported."),
+    dict(n=11, region="AMERICAS", field="DIPLOMACY", chip="REPORTED", part="AFTERNOON", hour=15.0, fig="NO CEASEFIRE",
+         head="KUSHNER: PUTIN IS NOT INTERESTED IN A CEASEFIRE",
+         deck="Envoy: territorial gap can't be bridged."),
+    dict(n=12, region="ASIA", field="MARKETS", chip="CONFIRMED", part="MORNING", hour=6.2, fig="+1.4%",
+         head="ASIA RALLIES, SHRUGGING OFF THE NEW TARIFF PLAN",
+         deck="Nikkei +1.4%; Kioxia +12.6% on Nvidia pact."),
+    dict(n=13, region="ASIA", field="KOREA", chip="OFFICIAL", part="NIGHT", hour=2.5, fig="3.25%",
+         head="BANK OF KOREA HIKES TO 3.25%, A TWO-YEAR HIGH",
+         deck="Third rise of 2026; final meeting of the year."),
+    dict(n=14, region="MIDDLE EAST", field="HORMUZ", chip="CLAIM", part="MORNING", hour=8.0, fig="2M BARRELS",
+         head="IRGC CLAIMS A SUPERTANKER WAS MINED AT HORMUZ",
+         deck="UK logs blast near tanker off Dubai."),
+    dict(n=15, region="EUROPE", field="WAR", chip="CLAIM", part="MORNING", hour=7.4, fig="2,319",
+         head="KYIV CLAIMS 2,319 RUSSIAN LOSSES IN A SINGLE DAY",
+         deck="November passes October's record in 25 days."),
+]
+
+ALSO = [
+    (16, "EUROPE", "UA", "Kherson: 33 settlements struck"),
+    (17, "EUROPE", "UA", "Zaporizhzhia: 4 investigators dead"),
+    (18, "EUROPE", "UA", "Kryvyi Rih: drone waves overnight"),
+    (19, "EUROPE", "RU", "Duma: record arms budget passed"),
+    (20, "EUROPE", "LT", "Lithuania: list GRU as terrorists"),
+    (21, "EUROPE", "IT", "Meloni: war must not spread"),
+    (22, "EUROPE", "RU", "Lavrov: US grasps root causes"),
+    (23, "AMERICAS", "US", "Nvidia halts SE-Asia shipments"),
+    (24, "GLOBAL", "GL", "RAM prices triple on AI demand"),
+    (25, "AMERICAS", "US", "NY bans AI bots posing as human"),
+    (26, "AMERICAS", "US", "40+ AGs fight chat-data auction"),
+    (27, "EUROPE", "EU", "EU Academy breach: data stolen"),
+    (28, "GLOBAL", "GL", "Salt Typhoon turns to AI hacking"),
+    (29, "GLOBAL", "GL", "Gold slumps ~3% on hike bets"),
+    (30, "AMERICAS", "US", "FCC clears orbital data centres"),
+    (31, "ASIA", "MM", "Myanmar rejects ICJ ruling parts"),
+    (32, "MIDDLE EAST", "PS", "Storm threat: 1.7M in Gaza tents"),
+    (33, "AMERICAS", "US", "NFL: Bears-Lions, Eagles-Cowboys"),
+    (34, "AMERICAS", "US", "Rams beat Packers 26-13 (Eve)"),
+    (35, "OCEANIA", "AU", "ASX 200 closes +0.8% at 8,764"),
+    (36, "AMERICAS", "US", "Wall Street shut for Thanksgiving"),
+]
+
+REGION_COUNTS = "EUROPE 14 · AMERICAS 9 · ASIA 5 · MIDDLE EAST 3 · GLOBAL 3 · AFRICA 1 · OCEANIA 1 = 36 STORIES"
+
+RAIL = [("113", "DRONES OVER KYIV (Nº1)"), ("81.5M", "US TRAVELLERS (Nº2)"),
+        ("€45BN", "UKRAINE LOAN FOUGHT OVER (Nº3)"), ("77,000", "UK NET MIGRATION (Nº7)"),
+        ("31", "DEAD IN GIZA FIRE (Nº9)"), ("2,319", "LOSSES KYIV CLAIMS (Nº15)")]
+
+DATE_CHECK = [
+    ("Giza tanker crash itself", "WED 25, 18:08 — Thursday's news is the driver's arrest"),
+    ("Shenzhou-24 docks at Tiangong", "WED 25"),
+    ("Huawei Brooklyn verdict", "TUE 24"),
+    ("COP31 collapse", "SUN 22"),
+    ("Bogor mine floods", "MON 23 — Thursday's news is the toll and the search"),
+    ("Macy's parade flies", "SAT 28 — not yet"),
+]
+
+PINS = {1: (0.565, 0.14), 2: (0.13, 0.32), 3: (0.475, 0.16), 4: (0.545, 0.42),
+        5: (0.83, 0.28), 6: (0.755, 0.68), 7: (0.44, 0.10), 8: (0.475, 0.13),
+        9: (0.52, 0.52), 10: (0.60, 0.10), 11: (0.15, 0.28), 12: (0.815, 0.30),
+        13: (0.835, 0.27), 14: (0.63, 0.38), 15: (0.575, 0.13),
+        16: (0.555, 0.17), 17: (0.56, 0.16), 18: (0.55, 0.155), 19: (0.62, 0.08),
+        20: (0.52, 0.09), 21: (0.485, 0.20), 22: (0.615, 0.09), 23: (0.14, 0.30),
+        24: (0.50, 0.50), 25: (0.155, 0.27), 26: (0.15, 0.31), 27: (0.48, 0.15),
+        28: (0.78, 0.32), 29: (0.50, 0.145), 30: (0.145, 0.29), 31: (0.735, 0.42),
+        32: (0.55, 0.44), 33: (0.135, 0.26), 34: (0.075, 0.33), 35: (0.875, 0.82),
+        36: (0.16, 0.29)}
