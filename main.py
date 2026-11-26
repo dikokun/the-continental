@@ -152,14 +152,14 @@ def draw_also(d, img, ax, y, aw, title):
     d.text((ax + 9, y + 3), title, font=arch(12, 900), fill=WHITE)
     acolw = (aw - 10) // 2
     for i, (n, region, code, text) in enumerate(ALSO):
-        cx = ax + (i % 2) * (acolw + 10); cy = y + 23 + (i // 2) * 18
-        if i // 2 == 10: cx = ax; cy = y + 23 + 10 * 18
-        flag(img, cx, cy, code)
-        d.text((cx + 29, cy + 2), f"{n:02d}", font=arch(12, 900), fill=BLUE)
+        cx = ax + (i % 2) * (acolw + 10); cy = y + 21 + (i // 2) * 14
+        if i // 2 == 10: cx = ax; cy = y + 21 + 10 * 14
+        flag(img, cx, cy, code, 24, 13)
+        d.text((cx + 29, cy + 1), f"{n:02d}", font=arch(12, 900), fill=BLUE)
         lines = wrap(d, text, inter(10, 500), acolw - 60)
         if len(lines) > 1: raise SystemExit(f"also {n} wraps")
-        d.text((cx + 58, cy + 3), lines[0], font=inter(10, 500), fill=(40, 44, 52))
-    ly = y + 23 + 11 * 18 + 1; lx = ax
+        d.text((cx + 58, cy + 2), lines[0], font=inter(10, 500), fill=(40, 44, 52))
+    ly = y + 21 + 11 * 14 + 1; lx = ax
     d.text((lx, ly), "HOW SURE:", font=arch(10, 900), fill=INK); lx += tw(d, "HOW SURE:", arch(10, 900)) + 6
     for label, col, note in [("CONFIRMED", GREEN, "wire-verified"), ("OFFICIAL", (90, 60, 150), "statement"), ("REPORTED", BLUE, "attributed"), ("CLAIM", CRIMSON, "one side")]:
         lx += chip(d, lx, ly - 2, label, col, size=9) + 5
@@ -212,11 +212,11 @@ def mid_plate_A(img, d, y, rowh, plate_h):
         art = Image.open(os.path.join(BASE, MID_ART[m["n"]])).convert("RGB")
         img.paste(cover(art, colw, plate_h), (cx, cy + 16))
         d.rectangle([cx, cy + 16, cx + colw, cy + 16 + plate_h], outline=INK, width=1)
-        ty = cy + 19 + plate_h
+        ty = cy + 18 + plate_h
         head_lines = wrap(d, m["head"], arch(12, 800), colw - 2)
         if len(head_lines) > 2: raise SystemExit(f"mid {m['n']}: headline {len(head_lines)} lines (A)")
         for ln in head_lines:
-            d.text((cx, ty), ln, font=arch(12, 800), fill=INK); ty += 13
+            d.text((cx, ty), ln, font=arch(12, 800), fill=INK); ty += 12
         fy = cy + rowh - 14
         d.text((cx, fy), m["fig"], font=arch(12, 900), fill=CRIMSON)
         figw = tw(d, m["fig"], arch(12, 900))
@@ -264,39 +264,39 @@ def data_strip(m, w, h):
 
 def build_A():
     img = Image.new("RGB", (W, W), PAPER); d = ImageDraw.Draw(img)
-    y = 12
-    d.text((MARGIN, y), "THE CONTINENTAL", font=serif(32), fill=INK)
-    d.text((MARGIN + 330, y + 16), "ALL THE DAY, ON ONE SHEET", font=arch(11, 800), fill=GREY)
+    y = 10
+    d.text((MARGIN, y), "THE CONTINENTAL", font=serif(30), fill=INK)
+    d.text((MARGIN + 330, y + 14), "ALL THE DAY, ON ONE SHEET", font=arch(11, 800), fill=GREY)
     slab_x = W - MARGIN - 150
-    d.rectangle([slab_x, y, W - MARGIN, y + 40], fill=NAVY)
-    d.text((slab_x + 12, y + 4), "DAY 330 OF 2026", font=arch(12, 900), fill=AMBER)
-    d.text((slab_x + 12, y + 21), "36 STORIES", font=arch(12, 900), fill=WHITE)
-    y += 42
-    d.text((MARGIN, y), "Thursday 26 November 2026", font=serif(38), fill=CRIMSON)
-    y += 44
+    d.rectangle([slab_x, y, W - MARGIN, y + 34], fill=NAVY)
+    d.text((slab_x + 12, y + 3), "DAY 330 OF 2026", font=arch(12, 900), fill=AMBER)
+    d.text((slab_x + 12, y + 19), "36 STORIES", font=arch(12, 900), fill=WHITE)
+    y += 36
+    d.text((MARGIN, y), "Thursday 26 November 2026", font=serif(36), fill=CRIMSON)
+    y += 40
     d.text((MARGIN, y), REGION_COUNTS, font=arch(13, 900), fill=INK)
     d.line([MARGIN, y + 17, W - MARGIN, y + 17], fill=GOLD, width=3)
-    y += 21
-    d.rectangle([MARGIN, y, W - MARGIN, y + 34], fill=NAVY)
+    y += 20
+    d.rectangle([MARGIN, y, W - MARGIN, y + 26], fill=NAVY)
     rw = CW // 6
     for i, (fig, cap) in enumerate(RAIL):
         rx = MARGIN + i * rw + 10
-        d.text((rx, y + 2), fig, font=arch(17, 900), fill=AMBER)
-        for j, ln in enumerate(wrap(d, cap, arch(7, 700), rw - 16)[:2]):
-            d.text((rx, y + 21 + j * 8), ln, font=arch(7, 700), fill=(178, 186, 205))
-        if i: d.line([MARGIN + i * rw, y + 4, MARGIN + i * rw, y + 30], fill=(52, 58, 74), width=1)
-    y += 37
-    y = hero_block(img, d, y, 70, serif(15), 17, lambda a, w, h: cover(a, w, h))
+        d.text((rx, y + 1), fig, font=arch(15, 900), fill=AMBER)
+        for j, ln in enumerate(wrap(d, cap, arch(7, 700), rw - 16)[:1]):
+            d.text((rx, y + 17 + j * 8), ln, font=arch(7, 700), fill=(178, 186, 205))
+        if i: d.line([MARGIN + i * rw, y + 3, MARGIN + i * rw, y + 23], fill=(52, 58, 74), width=1)
+    y += 29
+    y = hero_block(img, d, y, 140, serif(15), 17, lambda a, w, h: cover(a, w, h))
     d.text((MARGIN, y), "THE DAY IN FULL", font=serif(16), fill=INK)
     d.line([MARGIN + 150, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
-    y += 20
-    mid_plate_A(img, d, y, 108, 48)
-    y += 4 * 108 + 2
+    y += 16
+    mid_plate_A(img, d, y, 105, 48)
+    y += 4 * 105 + 2
     bot = y
-    draw_map(d, img, MARGIN, bot, 452, 112, AMBER)
-    draw_datecheck(d, MARGIN, bot + 122, 452, 88)
+    draw_map(d, img, MARGIN, bot, 452, 92, AMBER)
+    draw_datecheck(d, MARGIN, bot + 100, 452, 88)
     end = draw_also(d, img, MARGIN + 466, bot, CW - 466, "ALSO THURSDAY — 21 MORE, FLAGGED")
-    footer(d, max(bot + 216, end) + 2, "THE CONTINENTAL")
+    footer(d, max(bot + 188, end) + 2, "THE CONTINENTAL")
     return img
 
 def data_hero(d, x, y, pw, ph, hero):
