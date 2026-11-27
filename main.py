@@ -202,7 +202,7 @@ def draw_map_big(d, img, x, y, w, h, title_col):
         d.ellipse([px - 10, py - 10, px + 10, py + 10], fill=AMBER, outline=INK, width=2)
         st = str(n); f = arch(11, 900)
         d.text((px - tw(d, st, f) / 2, py - 6), st, font=f, fill=INK)
-    for n, txt, side in [(2, "NEW YORK", "se"), (6, "BOGOR", "r"), (12, "TOKYO", "r")]:
+    for n, txt, side in [(2, "NEW YORK", "se"), (6, "BOGOR", "l"), (12, "TOKYO", "r")]:
         px, py = pts[n]; f = arch(7, 800); wtxt = tw(d, txt, f)
         if side == "r": lx, ly = px + 15, py - 4
         elif side == "se": lx, ly = px + 14, py + 12
