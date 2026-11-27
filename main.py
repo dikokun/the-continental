@@ -245,9 +245,9 @@ def draw_also(d, img, ax, y, aw, title):
     for i, (n, region, code, text) in enumerate(ALSO):
         cx = ax + (i // per) * (colw + 10); cy = y + 52 + (i % per) * 15
         d.text((cx, cy), f"{n}", font=arch(11, 900), fill=CRIMSON)
-        lines = wrap(d, text, inter(10.5, 500), colw - 26)
+        lines = wrap(d, text, inter(11, 500), colw - 26)
         if len(lines) > 1: raise SystemExit(f"also {n} wraps (A2)")
-        d.text((cx + 24, cy + 1), lines[0], font=inter(10.5, 500), fill=(40, 44, 52))
+        d.text((cx + 24, cy + 1), lines[0], font=inter(11, 500), fill=(40, 44, 52))
     return y + 52 + per * 15 + 2
 def footer(d, y, name):
     d.line([MARGIN, y, W - MARGIN, y], fill=INK, width=1)
