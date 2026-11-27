@@ -218,16 +218,17 @@ def draw_datecheck(d, x, y, w, h):
         colw = (w - 32) // 2
         df = arch(10, 900); cf2 = inter(10.5, 500)
         for i, (dd, s_) in enumerate(DATE_CHECK):
-            cx = x + 13 + (i // 3) * (colw + 12); cy = y + 24 + (i % 3) * 38
+            cx = x + 13 + (i // 3) * (colw + 12); cy = y + 24 + (i % 3) * 42
             dw_ = tw(d, dd, df)
             d.text((cx, cy), dd, font=df, fill=CRIMSON)
             words = s_.split(); l1 = ""
             while words and tw(d, (l1 + " " + words[0]).strip(), cf2) <= colw - dw_ - 6:
                 l1 = (l1 + " " + words.pop(0)).strip()
-            l2 = " ".join(words)
-            if tw(d, l2, cf2) > colw: raise SystemExit(f"date check wide wraps: {s_}")
+            rest = wrap(d, " ".join(words), cf2, colw) if words else []
+            if len(rest) > 2: raise SystemExit(f"date check wide wraps: {s_}")
             d.text((cx + dw_ + 6, cy + 1), l1, font=cf2, fill=(52, 56, 64))
-            if l2: d.text((cx, cy + 16), l2, font=cf2, fill=(52, 56, 64))
+            for k, ln in enumerate(rest):
+                d.text((cx, cy + 16 + k * 15), ln, font=cf2, fill=(52, 56, 64))
         return
     ty = y + 20
     for s, dd in DATE_CHECK:
@@ -440,9 +441,9 @@ def build_A():
     y += 28
     end = draw_also(d, img, MARGIN, y, CW, "")
     bot = end + 8
-    draw_map_big(d, img, MARGIN, bot, 430, 146, AMBER)
-    draw_datecheck(d, MARGIN + 444, bot, CW - 444, 146)
-    footer(d, bot + 150, "THE CONTINENTAL")
+    draw_map_big(d, img, MARGIN, bot, 430, 158, AMBER)
+    draw_datecheck(d, MARGIN + 444, bot, CW - 444, 158)
+    footer(d, bot + 162, "THE CONTINENTAL")
     return img
 
 def data_hero(d, x, y, pw, ph, hero):

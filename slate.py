@@ -83,12 +83,12 @@ RAIL = [("113", "DRONES OVER KYIV (Nº1)"), ("81.5M", "US TRAVELLERS (Nº2)"),
         ("31", "DEAD IN GIZA FIRE (Nº9)"), ("2,319", "LOSSES KYIV CLAIMS (Nº15)")]
 
 DATE_CHECK = [
-    ("WED 25", "Giza crash itself, 18:08 — the arrest is Thursday's news"),
-    ("WED 25", "Shenzhou-24 docks at Tiangong — Wednesday's, not repeated"),
-    ("TUE 24", "Huawei Brooklyn verdict — Tuesday's, left out"),
-    ("SUN 22", "COP31 collapse — Sunday's, left out"),
-    ("MON 23", "Bogor mine floods — Thursday's news is the toll and the probe"),
-    ("SAT 28", "Macy's parade flies — Saturday, not yet"),
+    ("WED 25", "Giza crash itself, 18:08 — the fire was Wednesday's news; the driver's arrest and his confession are Thursday's"),
+    ("WED 25", "Shenzhou-24 docks at Tiangong — Wednesday's story, told there, not repeated as Thursday's"),
+    ("TUE 24", "Huawei Brooklyn verdict — Tuesday's verdict, left out of Thursday's edition in full"),
+    ("SUN 22", "COP31 collapse — Sunday's collapse, left out; only its fallout would run"),
+    ("MON 23", "Bogor mine floods — the flood was Monday's; Thursday's news is the toll, the search and the police probe"),
+    ("SAT 28", "Macy's parade flies — the balloons fly Saturday; Thursday's news is the postponement itself"),
 ]
 
 PINS = {1: (0.565, 0.14), 2: (0.13, 0.32), 3: (0.475, 0.16), 4: (0.545, 0.42),
