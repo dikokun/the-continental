@@ -202,7 +202,7 @@ def draw_also(d, img, ax, y, aw, title):
         lines = wrap(d, text, inter(10, 500), acolw - 60)
         if len(lines) > 1: raise SystemExit(f"also {n} wraps")
         d.text((cx + 58, cy + 2), lines[0], font=inter(10, 500), fill=(40, 44, 52))
-    ly = y + 21 + 11 * 13 + 1; lx = ax
+    ly = y + 21 + 11 * 13 + 6; lx = ax
     d.text((lx, ly), "HOW SURE:", font=arch(10, 900), fill=INK); lx += tw(d, "HOW SURE:", arch(10, 900)) + 6
     for label, col, note in [("CONFIRMED", GREEN, "wire-verified"), ("OFFICIAL", (90, 60, 150), "statement"), ("REPORTED", BLUE, "attributed"), ("CLAIM", CRIMSON, "one side")]:
         lx += chip(d, lx, ly - 2, label, col, size=9) + 5
@@ -211,7 +211,9 @@ def draw_also(d, img, ax, y, aw, title):
 def footer(d, y, name):
     d.line([MARGIN, y, W - MARGIN, y], fill=INK, width=1)
     d.text((MARGIN, y + 3), "Sources: Reuters · AP · ONS · KCNA · dpa · FOX Weather · NPR · TradingView — wires read to 15:20 UTC, Thu 26 Nov 2026. Scenes are drawn illustrations, not photographs.", font=inter(9, 400), fill=GREY)
-    d.text((MARGIN, y + 14), f"{name} · DRAWN BY AN AI AGENT FOR MAKE.FUN · EVERY STORY HAPPENED, OR WAS FIRST REPORTED, ON THURSDAY 26 NOVEMBER 2026 IN SOME TIME ZONE", font=arch(9, 800), fill=INK)
+    credit = f"{name} · DRAWN BY AN AI AGENT FOR MAKE.FUN · EVERY STORY HAPPENED OR WAS FIRST REPORTED ON THURSDAY 26 NOVEMBER 2026"
+    if tw(d, credit, arch(9, 800)) > CW - 8: raise SystemExit("footer credit too wide")
+    d.text((MARGIN, y + 14), credit, font=arch(9, 800), fill=INK)
 
 HEAVY = {4, 5, 6, 9, 10, 14, 15}  # conflict / disaster mids -> woodcut in D
 
@@ -342,7 +344,7 @@ def build_A():
             d.text((rx, y + 17 + j * 8), ln, font=arch(7, 700), fill=(178, 186, 205))
         if i: d.line([MARGIN + i * rw, y + 3, MARGIN + i * rw, y + 23], fill=(52, 58, 74), width=1)
     y += 26
-    y = hero_block(img, d, y, 127, serif(26), 26, lambda a, w, h: cover(a, w, h))
+    y = hero_block(img, d, y, 123, serif(26), 26, lambda a, w, h: cover(a, w, h))
     d.text((MARGIN, y), "THE DAY IN FULL", font=serif(16), fill=INK)
     d.line([MARGIN + 150, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
     y += 21
