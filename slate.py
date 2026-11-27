@@ -6,16 +6,16 @@
 
 HEROES = [
     dict(n=1, region="EUROPE", field="WAR", chip="CONFIRMED", part="NIGHT", hour=1.0,
-         head="Kyiv hit by 113 drones",
+         head="113 drones hit Kyiv",
          deck="Missiles and drones struck Desnianskyi; a shopping centre burns, 7 wounded; Zelensky warns of worse.",
          banner="KYIV HIT · 7 WOUNDED", scene="kyiv", fig="113 DRONES"),
     dict(n=2, region="AMERICAS", field="WEATHER", chip="CONFIRMED", part="AFTERNOON", hour=14.7,
          head="Parade grounded",
-         deck="Macy's parade postponed — a first in 100 years. 81.5M travel; gusts 65 mph; 400,000+ homes dark.",
+         deck="Macy's parade postponed — a first in 100 years. 81.5M travel; gusts 65 mph; nearly 1M homes dark.",
          banner="A FIRST IN 100 YEARS", scene="storm", fig="81.5M"),
     dict(n=3, region="EUROPE", field="POLITICS", chip="REPORTED", part="MORNING", hour=10.0,
          head="€45bn loan fight",
-         deck="Brussels wrestles the €1.58tn 2028–34 budget and Kyiv's loan, racing to lock both before Le Pen.",
+         deck="Summit ends without a deal: 24 of 27 back Kyiv's €45bn loan, but the €1.58tn budget fight rolls to December.",
          banner="MERZ: “27, NOT 23 OR 24”", scene="summit", fig="€45BN"),
 ]
 
@@ -28,7 +28,7 @@ MIDS = [
          deck="Orders a wider tactical deployment. KCNA calls the status “absolutely inviolable”."),
     dict(n=6, region="ASIA", field="MINE", chip="CONFIRMED", part="MORNING", hour=5.0, fig="13 + 13",
          head="Bogor mine: 13 dead",
-         deck="Thirteen dead are confirmed and 13 still trapped; rain halts the search and six of the dead are named."),
+         deck="Thirteen dead are confirmed, 13 still trapped; rain halts the search and police open a criminal probe."),
     dict(n=7, region="EUROPE", field="MIGRATION", chip="OFFICIAL", part="AFTERNOON", hour=13.0, fig="77,000",
          head="Net migration: 77,000",
          deck="The lowest since 1997: down from 204,000 a year ago and 92% below the 2023 peak, says the ONS."),
@@ -45,7 +45,7 @@ MIDS = [
          head="Asia shrugs off tariffs",
          deck="Asia rallies, shrugging off the tariff plan: Nikkei +1.4% and Kioxia +12.6% on its Nvidia pact."),
     dict(n=14, region="MIDDLE EAST", field="HORMUZ", chip="CLAIM", part="MORNING", hour=8.0, fig="2M BARRELS",
-         head="Hormuz tanker ‘mined’",
+         head="Hormuz tanker mined",
          deck="The IRGC claims a supertanker was mined at Hormuz; the UK logs a blast near a tanker off Dubai."),
 ]
 
@@ -70,7 +70,7 @@ ALSO = [
     (30, "AMERICAS", "US", "US — FCC clears orbital data centres in ruling"),
     (31, "ASIA", "MM", "Myanmar — Junta rejects parts of the ICJ ruling"),
     (32, "MIDDLE EAST", "PS", "Gaza — Storm threat: 1.7M people in tents at risk"),
-    (33, "AMERICAS", "US", "US — NFL Thanksgiving: Bears-Lions, Eagles-Cowboys"),
+    (33, "AMERICAS", "US", "US — NFL Thanksgiving: Bears, Eagles, Bills win late"),
     (34, "AMERICAS", "US", "US — Rams beat Packers 26-13 (played Wed. Eve)"),
     (35, "OCEANIA", "AU", "Australia — ASX 200 index closes +0.8% at 8,764"),
     (36, "AMERICAS", "US", "US — Wall Street shut for the Thanksgiving holiday"),
@@ -83,12 +83,12 @@ RAIL = [("113", "DRONES OVER KYIV (Nº1)"), ("81.5M", "US TRAVELLERS (Nº2)"),
         ("31", "DEAD IN GIZA FIRE (Nº9)"), ("2,319", "LOSSES KYIV CLAIMS (Nº15)")]
 
 DATE_CHECK = [
-    ("Giza crash itself", "WED 25, 18:08 — arrest is Thu's news"),
-    ("Shenzhou-24 docks at Tiangong", "WED 25"),
-    ("Huawei Brooklyn verdict", "TUE 24"),
-    ("COP31 collapse", "SUN 22"),
-    ("Bogor mine floods", "MON 23 — toll and search are Thu's"),
-    ("Macy's parade flies", "SAT 28 — not yet"),
+    ("WED 25", "Giza crash itself, 18:08 — the arrest is Thursday's news"),
+    ("WED 25", "Shenzhou-24 docks at Tiangong — Wednesday's, not repeated"),
+    ("TUE 24", "Huawei Brooklyn verdict — Tuesday's, left out"),
+    ("SUN 22", "COP31 collapse — Sunday's, left out"),
+    ("MON 23", "Bogor mine floods — Thursday's news is the toll and the probe"),
+    ("SAT 28", "Macy's parade flies — Saturday, not yet"),
 ]
 
 PINS = {1: (0.565, 0.14), 2: (0.13, 0.32), 3: (0.475, 0.16), 4: (0.545, 0.42),
