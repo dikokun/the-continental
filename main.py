@@ -228,7 +228,7 @@ def draw_datecheck(d, x, y, w, h):
             if len(rest) > 2: raise SystemExit(f"date check wide wraps: {s_}")
             d.text((cx + dw_ + 6, cy + 1), l1, font=cf2, fill=(52, 56, 64))
             for k, ln in enumerate(rest):
-                d.text((cx, cy + 16 + k * 15), ln, font=cf2, fill=(52, 56, 64))
+                d.text((cx, cy + 15 + k * 13.5), ln, font=cf2, fill=(52, 56, 64))
         return
     ty = y + 20
     for s, dd in DATE_CHECK:
@@ -237,7 +237,7 @@ def draw_datecheck(d, x, y, w, h):
         for l2 in lines:
             d.text((x + 13, ty), l2, font=inter(10, 500), fill=(52, 56, 64)); ty += 12
 def draw_also(d, img, ax, y, aw, title):
-    d.text((ax, y), "Also in this edition", font=serif(20), fill=INK)
+    d.text((ax, y - 4), "Also on Thursday", font=serif(20), fill=INK)
     note = "24 MORE DISPATCHES · 7 REGIONS IN THIS EDITION"
     d.text((ax + aw - tw(d, note, arch(9, 900)), y + 7), note, font=arch(9, 900), fill=CRIMSON)
     chips = [p.strip() for p in REGION_COUNTS.replace(" = 36 STORIES", "").split("·")] + ["= 36 STORIES"]
@@ -425,7 +425,7 @@ def build_A():
     y = 10
     d.text((MARGIN, y), "THE", font=serif(19), fill=INK)
     d.text((MARGIN, y + 21), "CONTINENTAL", font=serif(19), fill=INK)
-    d.text((MARGIN + 168, y - 2), "Thursday 26 November 2026", font=serif(46), fill=INK)
+    d.text((MARGIN + 168, y - 10), "Thursday 26 November 2026", font=serif(44), fill=INK)
     for j, ln in enumerate(["DAY 330 OF 2026", "36 STORIES · 7 REGIONS", "WIRES TO 04:30 UTC"]):
         d.text((W - MARGIN - tw(d, ln, arch(9, 800)), y + 2 + j * 13), ln, font=arch(9, 800), fill=GREY)
     y += 52
