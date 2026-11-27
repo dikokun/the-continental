@@ -309,13 +309,22 @@ def build_A():
     img = Image.new("RGB", (W, W), PAPER); d = ImageDraw.Draw(img)
     y = 10
     d.text((MARGIN, y), "THE CONTINENTAL", font=serif(30), fill=INK)
-    d.text((MARGIN + 330, y + 14), "ALL THE DAY, ON ONE SHEET", font=arch(11, 800), fill=GREY)
-    slab_x = W - MARGIN - 150
+    slab_x = W - MARGIN - 470
     d.rectangle([slab_x, y, W - MARGIN, y + 34], fill=NAVY)
-    d.text((slab_x + 12, y + 3), "DAY 330 OF 2026", font=arch(12, 900), fill=AMBER)
-    d.text((slab_x + 12, y + 19), "36 STORIES", font=arch(12, 900), fill=WHITE)
+    cells = [("DAY 330", "OF 2026"), ("36 STORIES", "7 REGIONS"), ("WIRES TO", "15:20 UTC")]
+    cellw = 470 // 3
+    for i, (l1, l2) in enumerate(cells):
+        cx = slab_x + i * cellw + 12
+        d.text((cx, y + 3), l1, font=arch(12, 900), fill=AMBER)
+        d.text((cx, y + 19), l2, font=arch(12, 900), fill=WHITE)
+        if i: d.line([slab_x + i * cellw, y + 4, slab_x + i * cellw, y + 30], fill=(52, 58, 74), width=1)
     y += 36
     d.text((MARGIN, y), "Thursday 26 November 2026", font=serif(36), fill=CRIMSON)
+    date_w = tw(d, "Thursday 26 November 2026", serif(36))
+    bx = MARGIN + date_w + 24
+    d.rectangle([bx, y + 6, W - MARGIN, y + 32], fill=CRIMSON)
+    tag = "ALL THE DAY, ON ONE SHEET"
+    d.text((bx + (W - MARGIN - bx - tw(d, tag, arch(13, 900))) / 2, y + 12), tag, font=arch(13, 900), fill=WHITE)
     y += 40
     d.text((MARGIN, y), REGION_COUNTS, font=arch(13, 900), fill=INK)
     d.line([MARGIN, y + 17, W - MARGIN, y + 17], fill=GOLD, width=3)
