@@ -256,10 +256,10 @@ def mid_plate_A(img, d, y, rowh, plate_h):
         img.paste(cover(art, colw, plate_h), (cx, cy + 16))
         d.rectangle([cx, cy + 16, cx + colw, cy + 16 + plate_h], outline=INK, width=1)
         ty = cy + 18 + plate_h
-        head_lines = wrap(d, m["head"], serif(15), colw - 2)
+        head_lines = wrap(d, m["head"], serif(16), colw - 10)
         if len(head_lines) > 2: raise SystemExit(f"mid {m['n']}: headline {len(head_lines)} lines (A)")
         for ln in head_lines:
-            d.text((cx, ty), ln, font=serif(15), fill=INK); ty += 16
+            d.text((cx, ty), ln, font=serif(16), fill=INK); ty += 17
         dy = ty + 2
         d.text((cx, dy), m["fig"], font=arch(12, 900), fill=CRIMSON)
         figw = tw(d, m["fig"], arch(12, 900))
@@ -342,7 +342,7 @@ def build_A():
             d.text((rx, y + 17 + j * 8), ln, font=arch(7, 700), fill=(178, 186, 205))
         if i: d.line([MARGIN + i * rw, y + 3, MARGIN + i * rw, y + 23], fill=(52, 58, 74), width=1)
     y += 26
-    y = hero_block(img, d, y, 131, serif(22), 22, lambda a, w, h: cover(a, w, h))
+    y = hero_block(img, d, y, 127, serif(26), 26, lambda a, w, h: cover(a, w, h))
     d.text((MARGIN, y), "THE DAY IN FULL", font=serif(16), fill=INK)
     d.line([MARGIN + 150, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
     y += 21
