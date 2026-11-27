@@ -260,12 +260,16 @@ def mid_plate_A(img, d, y, rowh, plate_h):
         if len(head_lines) > 2: raise SystemExit(f"mid {m['n']}: headline {len(head_lines)} lines (A)")
         for ln in head_lines:
             d.text((cx, ty), ln, font=serif(15), fill=INK); ty += 16
-        fy = cy + rowh - 14
-        d.text((cx, fy), m["fig"], font=arch(12, 900), fill=CRIMSON)
+        dy = ty + 2
+        d.text((cx, dy), m["fig"], font=arch(12, 900), fill=CRIMSON)
         figw = tw(d, m["fig"], arch(12, 900))
-        dl = wrap(d, m["deck"], inter(10, 400), colw - 16 - figw)
-        if len(dl) > 1: raise SystemExit(f"mid {m['n']}: deck wraps (A)")
-        d.text((cx + 10 + figw, fy + 1), dl[0], font=inter(10, 400), fill=(70, 74, 82))
+        words = m["deck"].split(); line1 = ""; rest = list(words)
+        while rest and tw(d, (line1 + " " + rest[0]).strip(), inter(10, 400)) <= colw - 14 - figw:
+            line1 = (line1 + " " + rest.pop(0)).strip()
+        line2 = " ".join(rest)
+        if not line1 or tw(d, line2, inter(10, 400)) > colw - 2: raise SystemExit(f"mid {m['n']}: deck does not fit 2 lines (A)")
+        d.text((cx + 10 + figw, dy + 1), line1, font=inter(10, 400), fill=(70, 74, 82))
+        if line2: d.text((cx, dy + 13), line2, font=inter(10, 400), fill=(70, 74, 82))
         d.line([cx, cy + rowh - 3, cx + colw, cy + rowh - 3], fill=LIGHT)
 
 
