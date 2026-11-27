@@ -240,14 +240,19 @@ def draw_also(d, img, ax, y, aw, title):
     d.text((ax, y), "Also on Thursday", font=serif(20), fill=INK)
     note = "24 MORE DISPATCHES · 7 REGIONS IN THIS EDITION"
     d.text((ax + aw - tw(d, note, arch(9, 900)), y + 7), note, font=arch(9, 900), fill=CRIMSON)
-    chips = [p.strip() for p in REGION_COUNTS.replace(" = 36 STORIES", "").split("·")]
-    cols = [NAVY, CRIMSON, GREEN, (90, 60, 150), BLUE, (150, 110, 20), (20, 110, 110)]
+    chips = [p.strip() for p in REGION_COUNTS.replace(" = 36 STORIES", "").split("·")] + ["= 36 STORIES"]
+    cols = [NAVY, CRIMSON, GREEN, (90, 60, 150), BLUE, (150, 110, 20), (20, 110, 110), INK]
+    fch = arch(8, 800)
+    widths = [tw(d, cp, fch) + 12 for cp in chips]
+    leftover = aw - sum(widths)
+    pad_add = leftover * 0.45 / len(chips)
+    gap = (leftover - pad_add * len(chips)) / (len(chips) - 1)
     lx = ax
     for i, cp in enumerate(chips):
-        wch = tw(d, cp, arch(8, 800)) + 12
+        wch = widths[i] + pad_add
         d.rectangle([lx, y + 25, lx + wch, y + 40], fill=cols[i % len(cols)])
-        d.text((lx + 6, y + 28), cp, font=arch(8, 800), fill=WHITE)
-        lx += wch + 6
+        d.text((lx + (wch - tw(d, cp, fch)) / 2, y + 28), cp, font=fch, fill=WHITE)
+        lx += wch + gap
     colw = (aw - 20) // 3; per = (len(ALSO) + 2) // 3
     for i, (n, region, code, text) in enumerate(ALSO):
         cx = ax + (i // per) * (colw + 10); cy = y + 48 + (i % per) * 14.5
@@ -280,15 +285,19 @@ def draw_timeline(d, y):
     events = [("01:00", "Kyiv drone wave"), ("05:00", "Bogor toll: 13 dead"),
               ("10:00", "Brussels summit sits"), ("13:00", "UK migration: 77,000"),
               ("17:30", "Thanksgiving kickoff, Detroit")]
+    segw = []
+    for t_, lab in events:
+        segw.append(tw(d, t_, arch(9.5, 900)) + 4 + tw(d, lab, inter(9.5, 500)))
+    gap = ((W - MARGIN) - tx - sum(segw)) / (len(events) - 1)
     for i, (t_, lab) in enumerate(events):
         d.text((tx, y + 6), t_, font=arch(9.5, 900), fill=INK)
         tx += tw(d, t_, arch(9.5, 900)) + 4
         d.text((tx, y + 6), lab, font=inter(9.5, 500), fill=(52, 56, 64))
         tx += tw(d, lab, inter(9.5, 500))
         if i < len(events) - 1:
-            d.text((tx + 7, y + 6), "·", font=arch(9.5, 900), fill=AMBER)
-            tx += 21
-    if tx > W - MARGIN: raise SystemExit("timeline too wide")
+            d.text((tx + gap / 2 - 2, y + 6), "·", font=arch(9.5, 900), fill=AMBER)
+            tx += gap
+    if tx > W - MARGIN + 1: raise SystemExit("timeline too wide")
     d.line([MARGIN, y + 21, W - MARGIN, y + 21], fill=LIGHT, width=1)
 
 def draw_statstrip(d, y):
