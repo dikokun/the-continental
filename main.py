@@ -344,7 +344,7 @@ def build_A():
             d.text((rx, y + 17 + j * 8), ln, font=arch(7, 700), fill=(178, 186, 205))
         if i: d.line([MARGIN + i * rw, y + 3, MARGIN + i * rw, y + 23], fill=(52, 58, 74), width=1)
     y += 26
-    y = hero_block(img, d, y, 123, serif(26), 26, lambda a, w, h: cover(a, w, h))
+    y = hero_block(img, d, y, 119, serif(26), 30, lambda a, w, h: cover(a, w, h))
     d.text((MARGIN, y), "THE DAY IN FULL", font=serif(16), fill=INK)
     d.line([MARGIN + 150, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
     y += 21
