@@ -237,7 +237,7 @@ def draw_datecheck(d, x, y, w, h):
         for l2 in lines:
             d.text((x + 13, ty), l2, font=inter(10, 500), fill=(52, 56, 64)); ty += 12
 def draw_also(d, img, ax, y, aw, title):
-    d.text((ax, y), "Also on Thursday", font=serif(20), fill=INK)
+    d.text((ax, y), "Also in this edition", font=serif(20), fill=INK)
     note = "24 MORE DISPATCHES · 7 REGIONS IN THIS EDITION"
     d.text((ax + aw - tw(d, note, arch(9, 900)), y + 7), note, font=arch(9, 900), fill=CRIMSON)
     chips = [p.strip() for p in REGION_COUNTS.replace(" = 36 STORIES", "").split("·")] + ["= 36 STORIES"]
