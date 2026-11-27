@@ -137,6 +137,49 @@ def draw_map(d, img, x, y, w, h, title_col):
         px, py = x + 10 + fx * (w - 20), y + 22 + fy * (h - 28)
         d.ellipse([px - 5, py - 5, px + 5, py + 5], fill=AMBER)
         s = str(n); d.text((px - tw(d, s, arch(7, 900)) / 2, py - 3), s, font=arch(7, 900), fill=INK)
+def draw_map_big(d, img, x, y, w, h, title_col):
+    # Winner-style locator map (L16): solid landmass, BIG numbered pins.
+    d.rectangle([x, y, x + w, y + h], fill=INK)
+    d.text((x + 10, y + 5), "WHERE IT HAPPENED — PINS = STORY NUMBERS", font=arch(11, 900), fill=title_col)
+    cellw = (w - 20) / 50.0; pitch = (h - 30) / 18.0
+    for r in range(len(LAND)):
+        line = LAND[r].ljust(50)
+        for c in range(50):
+            if line[c] == "o":
+                cx0 = x + 10 + c * cellw; ry0 = y + 24 + r * pitch
+                d.rectangle([cx0, ry0, cx0 + cellw + 0.6, ry0 + pitch + 0.6], fill=(110, 128, 160))
+    illustrated = [h["n"] for h in HEROES] + [m["n"] for m in MIDS]
+    pts = {}
+    for n in sorted(illustrated):
+        fx, fy = PINS[n]
+        pts[n] = [x + 10 + fx * (w - 20), y + 22 + fy * (h - 28)]
+    # de-collision: pins are 20px wide; nudge overlapping pairs apart (<= ~12px)
+    import math
+    keys = sorted(pts)
+    for _ in range(80):
+        moved = False
+        for i in range(len(keys)):
+            for j in range(i + 1, len(keys)):
+                a, b = pts[keys[i]], pts[keys[j]]
+                dx, dy = b[0] - a[0], b[1] - a[1]
+                dist = math.hypot(dx, dy)
+                if dist < 22:
+                    if dist < 0.01: dx, dy, dist = 1.0, 0.3, 1.04
+                    push = (22 - dist) / 2.0
+                    ux, uy = dx / dist, dy / dist
+                    a[0] -= ux * push; a[1] -= uy * push
+                    b[0] += ux * push; b[1] += uy * push
+                    moved = True
+        for n in keys:
+            pts[n][0] = min(max(pts[n][0], x + 12), x + w - 12)
+            pts[n][1] = min(max(pts[n][1], y + 27), y + h - 11)
+        if not moved: break
+    for n in keys:
+        px, py = pts[n]
+        d.ellipse([px - 10, py - 10, px + 10, py + 10], fill=AMBER, outline=(255, 246, 220), width=2)
+        s = str(n); f = arch(11, 900)
+        d.text((px - tw(d, s, f) / 2, py - 6), s, font=f, fill=INK)
+
 def draw_datecheck(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(238, 233, 220), outline=INK, width=1)
     d.rectangle([x, y, x + 6, y + h], fill=CRIMSON)
@@ -293,7 +336,7 @@ def build_A():
     mid_plate_A(img, d, y, 105, 48)
     y += 4 * 105 + 2
     bot = y
-    draw_map(d, img, MARGIN, bot, 452, 92, AMBER)
+    draw_map_big(d, img, MARGIN, bot, 452, 92, AMBER)
     draw_datecheck(d, MARGIN, bot + 100, 452, 88)
     end = draw_also(d, img, MARGIN + 466, bot, CW - 466, "ALSO THURSDAY — 21 MORE, FLAGGED")
     footer(d, max(bot + 188, end) + 2, "THE CONTINENTAL")
