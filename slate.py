@@ -56,17 +56,17 @@ ALSO = [
     (16, "EUROPE", "UA", "Ukraine — Kherson: 33 settlements struck by fire"),
     (17, "EUROPE", "UA", "Ukraine — Zaporizhzhia: four investigators killed"),
     (18, "EUROPE", "UA", "Ukraine — Kryvyi Rih hit by drone waves overnight"),
-    (19, "EUROPE", "RU", "Russia — Duma passes a record wartime arms budget"),
+    (19, "EUROPE", "RU", "Russia — Transneft oil station hit, set ablaze"),
     (20, "EUROPE", "LT", "Lithuania — Call to list the GRU as a terrorist body"),
     (21, "EUROPE", "IT", "Italy — Meloni: war must not spread past Ukraine"),
     (22, "EUROPE", "RU", "Russia — Lavrov: Washington grasps the root causes"),
     (23, "AMERICAS", "US", "US — Nvidia halts SE-Asia shipments of its AI chips"),
     (24, "GLOBAL", "GL", "Global — RAM prices triple as AI demand surges"),
-    (25, "AMERICAS", "US", "US — New York bans AI bots that pose as humans"),
+    (25, "AMERICAS", "US", "Ukraine — Kharkiv: drone kills two in flats"),
     (26, "AMERICAS", "US", "US — 40+ attorneys general fight chat-data auction"),
     (27, "EUROPE", "EU", "EU — Academy breach: data stolen in cyber attack"),
     (28, "GLOBAL", "GL", "Global — Salt Typhoon turns to AI hacking tools"),
-    (29, "GLOBAL", "GL", "Global — Gold slumps ~3% as rate-hike bets build"),
+    (29, "GLOBAL", "GL", "Global — Gold steadies after 3% plunge and rebound"),
     (30, "AMERICAS", "US", "US — FCC clears orbital data centres in ruling"),
     (31, "ASIA", "MM", "Myanmar — Junta rejects parts of the ICJ ruling"),
     (32, "MIDDLE EAST", "PS", "Gaza — Storm threat: 1.7M people in tents at risk"),
@@ -76,7 +76,7 @@ ALSO = [
     (36, "AMERICAS", "US", "US — Wall Street shut for the Thanksgiving holiday"),
 ]
 
-REGION_COUNTS = "EUROPE 14 · AMERICAS 9 · ASIA 5 · MIDDLE EAST 3 · GLOBAL 3 · AFRICA 1 · OCEANIA 1 = 36 STORIES"
+REGION_COUNTS = "EUROPE 15 · AMERICAS 8 · ASIA 5 · MIDDLE EAST 3 · GLOBAL 3 · AFRICA 1 · OCEANIA 1 = 36 STORIES"
 
 RAIL = [("113", "DRONES OVER KYIV (Nº1)"), ("81.5M", "US TRAVELLERS (Nº2)"),
         ("€45BN", "UKRAINE LOAN FOUGHT OVER (Nº3)"), ("77,000", "UK NET MIGRATION (Nº7)"),
