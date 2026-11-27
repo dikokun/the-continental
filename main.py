@@ -138,25 +138,43 @@ def draw_map(d, img, x, y, w, h, title_col):
         d.ellipse([px - 5, py - 5, px + 5, py + 5], fill=AMBER)
         s = str(n); d.text((px - tw(d, s, arch(7, 900)) / 2, py - 3), s, font=arch(7, 900), fill=INK)
 def draw_map_big(d, img, x, y, w, h, title_col):
-    # Winner-style locator map (L16): solid landmass, BIG numbered pins.
+    # Locator map v2: real continent polygons (lon/lat), supersampled coasts,
+    # pins projected from each story's actual coordinates + place labels.
     d.rectangle([x, y, x + w, y + h], fill=INK)
     d.text((x + 10, y + 5), "WHERE IT HAPPENED — PINS = STORY NUMBERS", font=arch(11, 900), fill=title_col)
-    cellw = (w - 20) / 50.0; pitch = (h - 30) / 18.0
-    for r in range(len(LAND)):
-        line = LAND[r].ljust(50)
-        for c in range(50):
-            if line[c] == "o":
-                cx0 = x + 10 + c * cellw; ry0 = y + 24 + r * pitch
-                d.rectangle([cx0, ry0, cx0 + cellw + 0.6, ry0 + pitch + 0.6], fill=(110, 128, 160))
-    illustrated = [h["n"] for h in HEROES] + [m["n"] for m in MIDS]
+    CONT = [
+        [(-165,68),(-152,71),(-140,70),(-128,70),(-118,69),(-108,68),(-98,69),(-90,66),(-84,66),(-79,68),(-82,63),(-87,59),(-92,58),(-93,52),(-89,48),(-84,47),(-79,44),(-71,44),(-70,42),(-74,39),(-76,35),(-80,32),(-81,26),(-84,29),(-89,30),(-94,29),(-97,25),(-96,19),(-92,15),(-87,21),(-86,13),(-91,14),(-96,16),(-102,19),(-105,23),(-109,25),(-112,29),(-117,33),(-122,37),(-124,45),(-129,53),(-136,59),(-148,60),(-158,58),(-164,61)],
+        [(-46,60),(-41,63),(-32,68),(-22,70),(-19,74),(-24,78),(-34,80),(-48,77),(-54,71),(-53,65)],
+        [(-78,8),(-74,11),(-68,11),(-62,10),(-55,6),(-51,3),(-50,0),(-44,-3),(-36,-6),(-35,-9),(-38,-14),(-39,-20),(-41,-23),(-47,-26),(-52,-33),(-56,-37),(-62,-40),(-64,-44),(-66,-49),(-68,-54),(-70,-53),(-72,-48),(-73,-42),(-73,-35),(-71,-28),(-70,-20),(-70,-18),(-74,-15),(-78,-9),(-80,-5),(-81,0),(-78,3),(-77,6)],
+        [(-6,35),(0,34),(10,34),(11,33),(20,31),(30,30),(33,30),(35,27),(37,23),(39,20),(41,16),(43,12),(48,11),(51,12),(46,6),(42,0),(40,-6),(39,-12),(37,-18),(35,-24),(33,-28),(29,-32),(25,-34),(20,-35),(18,-33),(16,-28),(14,-22),(13,-17),(12,-13),(13,-8),(9,-3),(9,1),(5,4),(-2,5),(-7,4),(-12,8),(-16,12),(-17,16),(-17,21),(-16,25),(-14,29),(-10,31)],
+        [(-9,37),(-9,44),(-2,44),(-1,47),(-4,48),(-1,50),(1,52),(4,54),(7,56),(8,58),(11,58),(14,56),(19,56),(21,58),(24,60),(25,63),(23,66),(27,68),(32,70),(38,66),(45,68),(58,69),(70,70),(82,70),(94,71),(106,71),(118,72),(130,72),(142,72),(154,71),(164,70),(174,69),(178,66),(176,62),(169,60),(161,57),(156,51),(149,49),(142,46),(141,41),(139,37),(135,34),(131,33),(128,37),(124,39),(121,37),(120,31),(121,27),(117,24),(112,22),(109,18),(108,13),(107,8),(105,2),(102,1),(100,6),(98,10),(97,15),(94,17),(91,22),(88,21),(85,19),(81,15),(78,9),(76,12),(73,18),(70,21),(66,25),(61,25),(56,26),(52,26),(50,29),(48,30),(44,29),(42,32),(39,36),(36,36),(33,36),(29,36),(26,38),(23,36),(21,38),(18,40),(15,38),(13,41),(11,44),(8,44),(5,43),(2,42),(-1,39),(-3,37),(-6,36)],
+        [(-5,50),(-3,52),(-4,54),(-6,56),(-8,58),(-5,58),(-3,57),(-1,55),(-1,52),(-2,51)],
+        [(130,31),(132,33),(135,34),(138,35),(140,37),(141,40),(142,44),(140,45),(139,40),(137,36),(134,34),(131,32)],
+        [(96,5),(100,2),(104,-2),(107,-6),(111,-7),(115,-8),(120,-9),(125,-10),(130,-8),(136,-3),(141,-3),(140,-7),(134,-8),(128,-9),(121,-10),(115,-10),(109,-8),(103,-5),(98,1)],
+        [(113,-22),(114,-28),(115,-33),(118,-35),(124,-33),(130,-32),(133,-32),(136,-35),(138,-36),(140,-38),(145,-38),(147,-39),(150,-37),(153,-32),(153,-27),(151,-23),(149,-20),(146,-19),(143,-15),(142,-11),(140,-14),(139,-17),(136,-15),(135,-12),(132,-11),(129,-13),(126,-14),(122,-17),(118,-20)],
+    ]
+    LONLAT = {1: (30.5, 50.4), 2: (-73.9, 40.7), 3: (4.35, 50.85), 4: (34.3, 31.4),
+              5: (125.75, 39.0), 6: (106.8, -6.6), 7: (-0.1, 51.5), 8: (6.96, 50.94),
+              9: (31.2, 30.0), 10: (41.9, 44.6), 11: (-77.0, 38.9), 12: (139.7, 35.7),
+              13: (126.98, 37.57), 14: (56.5, 26.6), 15: (30.5, 50.4)}
+    SS = 3
+    lw_, lh_ = (w - 12) * SS, (h - 28) * SS
+    layer = Image.new("RGB", (lw_, lh_), INK)
+    ld = ImageDraw.Draw(layer)
+    def proj(lon, lat):
+        return ((lon + 168) / 346.0 * lw_, (76 - lat) / 132.0 * lh_)
+    for poly in CONT:
+        ld.polygon([proj(lon, lat) for lon, lat in poly], fill=(110, 128, 160))
+    img.paste(layer.resize((w - 12, h - 28), Image.LANCZOS), (x + 6, y + 24))
+    illustrated = [hh["n"] for hh in HEROES] + [m["n"] for m in MIDS]
     pts = {}
     for n in sorted(illustrated):
-        fx, fy = PINS[n]
-        pts[n] = [x + 10 + fx * (w - 20), y + 22 + fy * (h - 28)]
-    # de-collision: pins are 20px wide; nudge overlapping pairs apart (<= ~12px)
+        lon, lat = LONLAT[n]
+        pts[n] = [x + 6 + (lon + 168) / 346.0 * (w - 12), y + 24 + (76 - lat) / 132.0 * (h - 28)]
     import math
     keys = sorted(pts)
-    for _ in range(80):
+    origin = {n: tuple(pts[n]) for n in keys}
+    for _ in range(200):
         moved = False
         for i in range(len(keys)):
             for j in range(i + 1, len(keys)):
@@ -171,19 +189,39 @@ def draw_map_big(d, img, x, y, w, h, title_col):
                     b[0] += ux * push; b[1] += uy * push
                     moved = True
         for n in keys:
+            ox, oy = origin[n]
+            vx, vy = pts[n][0] - ox, pts[n][1] - oy
+            vd = math.hypot(vx, vy)
+            if vd > 13:
+                pts[n][0] = ox + vx / vd * 13; pts[n][1] = oy + vy / vd * 13
             pts[n][0] = min(max(pts[n][0], x + 12), x + w - 12)
             pts[n][1] = min(max(pts[n][1], y + 27), y + h - 11)
         if not moved: break
     for n in keys:
         px, py = pts[n]
         d.ellipse([px - 10, py - 10, px + 10, py + 10], fill=AMBER, outline=(255, 246, 220), width=2)
-        s = str(n); f = arch(11, 900)
-        d.text((px - tw(d, s, f) / 2, py - 6), s, font=f, fill=INK)
+        st = str(n); f = arch(11, 900)
+        d.text((px - tw(d, st, f) / 2, py - 6), st, font=f, fill=INK)
+    for n, txt, side in [(2, "NEW YORK", "se"), (6, "BOGOR", "r"), (12, "TOKYO", "r")]:
+        px, py = pts[n]; f = arch(7, 800); wtxt = tw(d, txt, f)
+        if side == "r": lx, ly = px + 13, py - 4
+        elif side == "se": lx, ly = px + 14, py + 12
+        else: lx, ly = px - 13 - wtxt, py - 4
+        d.text((lx, ly), txt, font=f, fill=(255, 246, 220))
+
 
 def draw_datecheck(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(238, 233, 220), outline=INK, width=1)
     d.rectangle([x, y, x + 6, y + h], fill=CRIMSON)
     d.text((x + 13, y + 4), "DATE CHECK — NOT THURSDAY, NOT PRINTED AS ITS NEWS:", font=arch(11, 900), fill=CRIMSON)
+    if h < 76:
+        colw = (w - 32) // 2
+        for i, (s_, dd) in enumerate(DATE_CHECK):
+            cx = x + 13 + (i // 3) * (colw + 12); cy = y + 21 + (i % 3) * 13
+            lines = wrap(d, f"· {s_} ({dd})", inter(9, 500), colw)
+            if len(lines) > 1: raise SystemExit(f"date check 2col wraps: {s_}")
+            d.text((cx, cy), lines[0], font=inter(9, 500), fill=(52, 56, 64))
+        return
     ty = y + 20
     for s, dd in DATE_CHECK:
         lines = wrap(d, f"· {s} ({dd})", inter(10, 500), w - 24)
@@ -351,8 +389,8 @@ def build_A():
     mid_plate_A(img, d, y, 108, 42)
     y += 4 * 108 - 2
     bot = y
-    draw_map_big(d, img, MARGIN, bot, 452, 80, AMBER)
-    draw_datecheck(d, MARGIN, bot + 84, 452, 92)
+    draw_map_big(d, img, MARGIN, bot, 452, 120, AMBER)
+    draw_datecheck(d, MARGIN, bot + 124, 452, 64)
     end = draw_also(d, img, MARGIN + 466, bot, CW - 466, "ALSO THURSDAY — 21 MORE, FLAGGED")
     footer(d, max(bot + 172, end) + 2, "THE CONTINENTAL")
     return img

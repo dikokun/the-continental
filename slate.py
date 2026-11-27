@@ -89,11 +89,11 @@ RAIL = [("113", "DRONES OVER KYIV (Nº1)"), ("81.5M", "US TRAVELLERS (Nº2)"),
         ("31", "DEAD IN GIZA FIRE (Nº9)"), ("2,319", "LOSSES KYIV CLAIMS (Nº15)")]
 
 DATE_CHECK = [
-    ("Giza tanker crash itself", "WED 25, 18:08 — Thursday's news is the driver's arrest"),
+    ("Giza crash itself", "WED 25 — arrest is Thu's"),
     ("Shenzhou-24 docks at Tiangong", "WED 25"),
     ("Huawei Brooklyn verdict", "TUE 24"),
     ("COP31 collapse", "SUN 22"),
-    ("Bogor mine floods", "MON 23 — Thursday's news is the toll and the search"),
+    ("Bogor mine floods", "MON 23 — toll is Thu's"),
     ("Macy's parade flies", "SAT 28 — not yet"),
 ]
 
