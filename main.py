@@ -256,16 +256,16 @@ def mid_plate_A(img, d, y, rowh, plate_h):
         img.paste(cover(art, colw, plate_h), (cx, cy + 16))
         d.rectangle([cx, cy + 16, cx + colw, cy + 16 + plate_h], outline=INK, width=1)
         ty = cy + 18 + plate_h
-        head_lines = wrap(d, m["head"], arch(12, 800), colw - 2)
+        head_lines = wrap(d, m["head"], arch(13, 800), colw - 2)
         if len(head_lines) > 2: raise SystemExit(f"mid {m['n']}: headline {len(head_lines)} lines (A)")
         for ln in head_lines:
-            d.text((cx, ty), ln, font=arch(12, 800), fill=INK); ty += 12
+            d.text((cx, ty), ln, font=arch(13, 800), fill=INK); ty += 13
         fy = cy + rowh - 14
         d.text((cx, fy), m["fig"], font=arch(12, 900), fill=CRIMSON)
         figw = tw(d, m["fig"], arch(12, 900))
-        dl = wrap(d, m["deck"], inter(9, 400), colw - 16 - figw)
+        dl = wrap(d, m["deck"], inter(10, 400), colw - 16 - figw)
         if len(dl) > 1: raise SystemExit(f"mid {m['n']}: deck wraps (A)")
-        d.text((cx + 10 + figw, fy + 1), dl[0], font=inter(9, 400), fill=(70, 74, 82))
+        d.text((cx + 10 + figw, fy + 1), dl[0], font=inter(10, 400), fill=(70, 74, 82))
         d.line([cx, cy + rowh - 3, cx + colw, cy + rowh - 3], fill=LIGHT)
 
 
@@ -338,12 +338,12 @@ def build_A():
             d.text((rx, y + 17 + j * 8), ln, font=arch(7, 700), fill=(178, 186, 205))
         if i: d.line([MARGIN + i * rw, y + 3, MARGIN + i * rw, y + 23], fill=(52, 58, 74), width=1)
     y += 29
-    y = hero_block(img, d, y, 140, serif(15), 17, lambda a, w, h: cover(a, w, h))
+    y = hero_block(img, d, y, 124, serif(19), 21, lambda a, w, h: cover(a, w, h))
     d.text((MARGIN, y), "THE DAY IN FULL", font=serif(16), fill=INK)
     d.line([MARGIN + 150, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
     y += 16
-    mid_plate_A(img, d, y, 105, 48)
-    y += 4 * 105 + 2
+    mid_plate_A(img, d, y, 108, 48)
+    y += 4 * 108 - 2
     bot = y
     draw_map_big(d, img, MARGIN, bot, 452, 92, AMBER)
     draw_datecheck(d, MARGIN, bot + 100, 452, 88)
