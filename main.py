@@ -217,21 +217,21 @@ HEAVY = {4, 5, 6, 9, 10, 14, 15}  # conflict / disaster mids -> woodcut in D
 
 def hero_block(img, d, y, art_h, head_f, head_lh, art_fn):
     pw = (CW - 16) // 3
+    end_max = y
     for i, hero in enumerate(HEROES):
         x = MARGIN + i * (pw + 8)
-        art = Image.open(os.path.join(BASE, ART[hero["scene"]])).convert("RGB")
-        img.paste(art_fn(art, pw, art_h), (x, y))
         d.rectangle([x, y, x + pw, y + 20], fill=REGION_TICK[hero["region"]])
         d.text((x + 8, y + 3), f"{hero['n']:02d} · {hero['region']} · {hero['field']}", font=arch(11, 800), fill=WHITE)
         cw_ = tw(d, hero["chip"], arch(10, 800)) + 12
         d.rectangle([x + pw - cw_ - 4, y + 2, x + pw - 4, y + 18], fill=CHIP_COL[hero["chip"]])
         d.text((x + pw - cw_ + 2, y + 4), hero["chip"], font=arch(10, 800), fill=WHITE)
-        by = y + art_h - 20
-        bf = arch(12, 900); bw_ = tw(d, hero["banner"], bf) + 14
-        if bw_ > pw - 8: raise SystemExit(f"hero {hero['n']}: banner too wide")
-        d.rectangle([x + 4, by, x + 4 + bw_, by + 18], fill=CRIMSON)
-        d.text((x + 11, by + 3), hero["banner"], font=bf, fill=WHITE)
-        ty = y + art_h + 6
+        ay = y + 20
+        art = Image.open(os.path.join(BASE, ART[hero["scene"]])).convert("RGB")
+        img.paste(art_fn(art, pw, art_h), (x, ay))
+        d.rectangle([x, ay, x + pw, ay + art_h], outline=INK, width=2)
+        ty = ay + art_h + 5
+        if tw(d, hero["banner"], arch(12, 900)) > pw - 4: raise SystemExit(f"hero {hero['n']}: banner too wide for paper line")
+        d.text((x, ty), hero["banner"], font=arch(12, 900), fill=CRIMSON); ty += 17
         head_lines = wrap(d, hero["head"], head_f, pw - 4)
         if len(head_lines) > 3: raise SystemExit(f"hero {hero['n']}: headline {len(head_lines)} lines")
         for ln in head_lines:
@@ -240,8 +240,8 @@ def hero_block(img, d, y, art_h, head_f, head_lh, art_fn):
         if len(deck_lines) > 2: raise SystemExit(f"hero {hero['n']}: deck {len(deck_lines)} lines")
         for ln in deck_lines:
             d.text((x, ty + 1), ln, font=inter(11, 400), fill=(70, 74, 82)); ty += 12
-        d.rectangle([x, y, x + pw, y + art_h], outline=INK, width=2)
-    return y + art_h + 6 + 3 * head_lh + 26
+        end_max = max(end_max, ty)
+    return end_max + 4
 
 def mid_plate_A(img, d, y, rowh, plate_h):
     colw = (CW - 16) // 3
@@ -325,10 +325,10 @@ def build_A():
     d.rectangle([bx, y + 6, W - MARGIN, y + 32], fill=CRIMSON)
     tag = "ALL THE DAY, ON ONE SHEET"
     d.text((bx + (W - MARGIN - bx - tw(d, tag, arch(13, 900))) / 2, y + 12), tag, font=arch(13, 900), fill=WHITE)
-    y += 38
+    y += 36
     d.text((MARGIN, y), REGION_COUNTS, font=arch(13, 900), fill=INK)
     d.line([MARGIN, y + 17, W - MARGIN, y + 17], fill=GOLD, width=3)
-    y += 20
+    y += 19
     d.rectangle([MARGIN, y, W - MARGIN, y + 26], fill=NAVY)
     rw = CW // 6
     for i, (fig, cap) in enumerate(RAIL):
@@ -338,17 +338,17 @@ def build_A():
             d.text((rx, y + 17 + j * 8), ln, font=arch(7, 700), fill=(178, 186, 205))
         if i: d.line([MARGIN + i * rw, y + 3, MARGIN + i * rw, y + 23], fill=(52, 58, 74), width=1)
     y += 26
-    y = hero_block(img, d, y, 131, serif(22), 22, lambda a, w, h: cover(a, w, h))
+    y = hero_block(img, d, y, 137, serif(22), 22, lambda a, w, h: cover(a, w, h))
     d.text((MARGIN, y), "THE DAY IN FULL", font=serif(16), fill=INK)
     d.line([MARGIN + 150, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
     y += 21
     mid_plate_A(img, d, y, 108, 42)
     y += 4 * 108 - 2
     bot = y
-    draw_map_big(d, img, MARGIN, bot, 452, 84, AMBER)
-    draw_datecheck(d, MARGIN, bot + 88, 452, 88)
+    draw_map_big(d, img, MARGIN, bot, 452, 80, AMBER)
+    draw_datecheck(d, MARGIN, bot + 84, 452, 88)
     end = draw_also(d, img, MARGIN + 466, bot, CW - 466, "ALSO THURSDAY — 21 MORE, FLAGGED")
-    footer(d, max(bot + 176, end) + 2, "THE CONTINENTAL")
+    footer(d, max(bot + 172, end) + 2, "THE CONTINENTAL")
     return img
 
 def data_hero(d, x, y, pw, ph, hero):
