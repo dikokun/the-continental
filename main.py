@@ -325,7 +325,7 @@ def build_A():
     d.rectangle([bx, y + 6, W - MARGIN, y + 32], fill=CRIMSON)
     tag = "ALL THE DAY, ON ONE SHEET"
     d.text((bx + (W - MARGIN - bx - tw(d, tag, arch(13, 900))) / 2, y + 12), tag, font=arch(13, 900), fill=WHITE)
-    y += 36
+    y += 42
     d.text((MARGIN, y), REGION_COUNTS, font=arch(13, 900), fill=INK)
     d.line([MARGIN, y + 17, W - MARGIN, y + 17], fill=GOLD, width=3)
     y += 19
@@ -338,7 +338,7 @@ def build_A():
             d.text((rx, y + 17 + j * 8), ln, font=arch(7, 700), fill=(178, 186, 205))
         if i: d.line([MARGIN + i * rw, y + 3, MARGIN + i * rw, y + 23], fill=(52, 58, 74), width=1)
     y += 26
-    y = hero_block(img, d, y, 137, serif(22), 22, lambda a, w, h: cover(a, w, h))
+    y = hero_block(img, d, y, 131, serif(22), 22, lambda a, w, h: cover(a, w, h))
     d.text((MARGIN, y), "THE DAY IN FULL", font=serif(16), fill=INK)
     d.line([MARGIN + 150, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
     y += 21
@@ -346,7 +346,7 @@ def build_A():
     y += 4 * 108 - 2
     bot = y
     draw_map_big(d, img, MARGIN, bot, 452, 80, AMBER)
-    draw_datecheck(d, MARGIN, bot + 84, 452, 88)
+    draw_datecheck(d, MARGIN, bot + 84, 452, 92)
     end = draw_also(d, img, MARGIN + 466, bot, CW - 466, "ALSO THURSDAY — 21 MORE, FLAGGED")
     footer(d, max(bot + 172, end) + 2, "THE CONTINENTAL")
     return img
