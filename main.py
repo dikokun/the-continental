@@ -21,7 +21,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from slate import HEROES, MIDS, ALSO, REGION_COUNTS, RAIL, DATE_CHECK, PINS
 
 W = 1024; MARGIN = 22; CW = W - 2 * MARGIN
-PAPER = (243, 236, 220); INK = (16, 24, 46); NAVY = (20, 33, 61)
+PAPER = (243, 236, 220); INK = (16, 24, 46); NAVY = (22, 64, 60)
 GOLD = (197, 142, 32); AMBER = (232, 163, 61); CRIMSON = (179, 58, 43)
 RED = (200, 32, 26); YELLOW = (245, 197, 49); BLACK = (18, 18, 18)
 TEAL = (10, 118, 110); GREY = (96, 100, 108); LIGHT = (224, 216, 198)
@@ -126,7 +126,7 @@ LAND = [
 "                                                  ",
 ]
 def draw_map(d, img, x, y, w, h, title_col):
-    d.rectangle([x, y, x + w, y + h], fill=INK)
+    d.rectangle([x, y, x + w, y + h], fill=NAVY)
     d.text((x + 10, y + 5), "WHERE IT HAPPENED — PINS = STORY NUMBERS", font=arch(11, 900), fill=title_col)
     for r in range(len(LAND)):
         line = LAND[r].ljust(50)
@@ -140,7 +140,7 @@ def draw_map(d, img, x, y, w, h, title_col):
 def draw_map_big(d, img, x, y, w, h, title_col):
     # Locator map v2: real continent polygons (lon/lat), supersampled coasts,
     # pins projected from each story's actual coordinates + place labels.
-    d.rectangle([x, y, x + w, y + h], fill=INK)
+    d.rectangle([x, y, x + w, y + h], fill=NAVY)
     d.text((x + 10, y + 5), "WHERE IT HAPPENED — PINS = STORY NUMBERS", font=arch(11, 900), fill=title_col)
     CONT = [
         [(-165,68),(-152,71),(-140,70),(-128,70),(-118,69),(-108,68),(-98,69),(-90,66),(-84,66),(-79,68),(-82,63),(-87,59),(-92,58),(-93,52),(-89,48),(-84,47),(-79,44),(-71,44),(-70,42),(-74,39),(-76,35),(-80,32),(-81,26),(-84,29),(-89,30),(-94,29),(-97,25),(-96,19),(-92,15),(-87,21),(-86,13),(-91,14),(-96,16),(-102,19),(-105,23),(-109,25),(-112,29),(-117,33),(-122,37),(-124,45),(-129,53),(-136,59),(-148,60),(-158,58),(-164,61)],
@@ -159,12 +159,12 @@ def draw_map_big(d, img, x, y, w, h, title_col):
               13: (126.98, 37.57), 14: (56.5, 26.6), 15: (30.5, 50.4)}
     SS = 3
     lw_, lh_ = (w - 12) * SS, (h - 28) * SS
-    layer = Image.new("RGB", (lw_, lh_), INK)
+    layer = Image.new("RGB", (lw_, lh_), NAVY)
     ld = ImageDraw.Draw(layer)
     def proj(lon, lat):
         return ((lon + 168) / 346.0 * lw_, (76 - lat) / 132.0 * lh_)
     for poly in CONT:
-        ld.polygon([proj(lon, lat) for lon, lat in poly], fill=(110, 128, 160))
+        ld.polygon([proj(lon, lat) for lon, lat in poly], fill=(233, 224, 198))
     img.paste(layer.resize((w - 12, h - 28), Image.LANCZOS), (x + 6, y + 24))
     illustrated = [hh["n"] for hh in HEROES] + [m["n"] for m in MIDS]
     pts = {}
@@ -199,12 +199,12 @@ def draw_map_big(d, img, x, y, w, h, title_col):
         if not moved: break
     for n in keys:
         px, py = pts[n]
-        d.ellipse([px - 10, py - 10, px + 10, py + 10], fill=AMBER, outline=(255, 246, 220), width=2)
+        d.ellipse([px - 10, py - 10, px + 10, py + 10], fill=AMBER, outline=INK, width=2)
         st = str(n); f = arch(11, 900)
         d.text((px - tw(d, st, f) / 2, py - 6), st, font=f, fill=INK)
     for n, txt, side in [(2, "NEW YORK", "se"), (6, "BOGOR", "r"), (12, "TOKYO", "r")]:
         px, py = pts[n]; f = arch(7, 800); wtxt = tw(d, txt, f)
-        if side == "r": lx, ly = px + 13, py - 4
+        if side == "r": lx, ly = px + 15, py - 4
         elif side == "se": lx, ly = px + 14, py + 12
         else: lx, ly = px - 13 - wtxt, py - 4
         d.text((lx, ly), txt, font=f, fill=(255, 246, 220))
@@ -217,11 +217,11 @@ def draw_datecheck(d, x, y, w, h):
     if w > 470 or h < 76:
         colw = (w - 32) // 2
         for i, (s_, dd) in enumerate(DATE_CHECK):
-            cx = x + 13 + (i // 3) * (colw + 12); cy = y + 22 + (i % 3) * 30
-            lines = wrap(d, f"· {s_} ({dd})", inter(10, 500), colw)
+            cx = x + 13 + (i // 3) * (colw + 12); cy = y + 24 + (i % 3) * 38
+            lines = wrap(d, f"· {s_} ({dd})", inter(10.5, 500), colw)
             if len(lines) > 2: raise SystemExit(f"date check wide wraps: {s_}")
             for k, ln in enumerate(lines):
-                d.text((cx, cy + k * 13), ln, font=inter(10, 500), fill=(52, 56, 64))
+                d.text((cx, cy + k * 15), ln, font=inter(10.5, 500), fill=(52, 56, 64))
         return
     ty = y + 20
     for s, dd in DATE_CHECK:
@@ -243,12 +243,12 @@ def draw_also(d, img, ax, y, aw, title):
         lx += wch + 6
     colw = (aw - 20) // 3; per = (len(ALSO) + 2) // 3
     for i, (n, region, code, text) in enumerate(ALSO):
-        cx = ax + (i // per) * (colw + 10); cy = y + 52 + (i % per) * 14
+        cx = ax + (i // per) * (colw + 10); cy = y + 52 + (i % per) * 15
         d.text((cx, cy), f"{n}", font=arch(11, 900), fill=CRIMSON)
         lines = wrap(d, text, inter(10.5, 500), colw - 26)
         if len(lines) > 1: raise SystemExit(f"also {n} wraps (A2)")
         d.text((cx + 24, cy + 1), lines[0], font=inter(10.5, 500), fill=(40, 44, 52))
-    return y + 52 + per * 14 + 2
+    return y + 52 + per * 15 + 2
 def footer(d, y, name):
     d.line([MARGIN, y, W - MARGIN, y], fill=INK, width=1)
     d.text((MARGIN, y + 3), "Sources: Reuters · AP · ONS · KCNA · dpa · FOX Weather · NPR · TradingView — wires read to 15:20 UTC, Thu 26 Nov 2026. Scenes are drawn illustrations, not photographs.", font=inter(9, 400), fill=GREY)
@@ -387,31 +387,23 @@ def data_strip(m, w, h):
 def build_A():
     img = Image.new("RGB", (W, W), PAPER); d = ImageDraw.Draw(img)
     y = 10
-    d.text((MARGIN, y), "THE CONTINENTAL", font=serif(30), fill=INK)
-    slab_x = W - MARGIN - 470
-    d.rectangle([slab_x, y, W - MARGIN, y + 34], fill=NAVY)
-    cells = [("DAY 330", "OF 2026"), ("36 STORIES", "7 REGIONS"), ("WIRES TO", "15:20 UTC")]
-    cellw = 470 // 3
-    for i, (l1, l2) in enumerate(cells):
-        cx = slab_x + i * cellw + 12
-        d.text((cx, y + 3), l1, font=arch(12, 900), fill=AMBER)
-        d.text((cx, y + 19), l2, font=arch(12, 900), fill=WHITE)
-        if i: d.line([slab_x + i * cellw, y + 4, slab_x + i * cellw, y + 30], fill=(52, 58, 74), width=1)
-    y += 36
-    d.text((MARGIN, y), "Thursday 26 November 2026", font=serif(36), fill=CRIMSON)
-    date_w = tw(d, "Thursday 26 November 2026", serif(36))
-    bx = MARGIN + date_w + 24
-    d.rectangle([bx, y + 6, W - MARGIN, y + 32], fill=CRIMSON)
-    tag = "ALL THE DAY, ON ONE SHEET"
-    d.text((bx + (W - MARGIN - bx - tw(d, tag, arch(13, 900))) / 2, y + 12), tag, font=arch(13, 900), fill=WHITE)
-    y += 42
-    d.text((MARGIN, y), REGION_COUNTS, font=arch(13, 900), fill=INK)
-    d.line([MARGIN, y + 17, W - MARGIN, y + 17], fill=GOLD, width=3)
-    y += 19
-    y = hero_block(img, d, y, 132, serif(28), 32, lambda a, w, h: cover(a, w, h))
-    d.text((MARGIN, y), "THE DAY IN FULL", font=serif(16), fill=INK)
-    d.line([MARGIN + 150, y + 9, W - MARGIN, y + 9], fill=INK, width=2)
-    y += 21
+    d.text((MARGIN, y), "THE", font=serif(19), fill=INK)
+    d.text((MARGIN, y + 21), "CONTINENTAL", font=serif(19), fill=INK)
+    d.text((MARGIN + 168, y - 2), "Thursday 26 November 2026", font=serif(46), fill=INK)
+    for j, ln in enumerate(["DAY 330 OF 2026", "36 STORIES · 7 REGIONS", "WIRES TO 15:20 UTC"]):
+        d.text((W - MARGIN - tw(d, ln, arch(9, 800)), y + 2 + j * 13), ln, font=arch(9, 800), fill=GREY)
+    y += 56
+    d.rectangle([MARGIN, y, W - MARGIN, y + 24], fill=NAVY)
+    tx = MARGIN + 12
+    for i, t in enumerate(["KYIV HIT BY 113 DRONES", "PARADE GROUNDED — A FIRST IN 100 YEARS", "€45BN LOAN FIGHT IN BRUSSELS"]):
+        d.text((tx, y + 6), t, font=arch(10.5, 800), fill=WHITE)
+        tx += tw(d, t, arch(10.5, 800))
+        if i < 2:
+            d.text((tx + 10, y + 6), "•", font=arch(10.5, 800), fill=AMBER)
+            tx += 30
+    y += 30
+    y = hero_block(img, d, y, 150, serif(28), 32, lambda a, w, h: cover(a, w, h))
+    y += 2
     mid_plate_A(img, d, y, 84, 78)
     y += 3 * 84 - 2
     y += 8
